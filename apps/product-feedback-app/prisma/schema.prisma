@@ -57,11 +57,13 @@ model Comment {
   id         String    @id @default(uuid())
   parentId   String?
   feedbackId String
-  content       String
+  content    String
   Feedback   Feedback  @relation(fields: [feedbackId], references: [id])
   User       User      @relation(fields: [username, email], references: [username, email])
   username   String
   email      String
-  parent    Comment?  @relation("ParentChild", fields: [parentId], references: [id])
-  children  Comment[] @relation("ParentChild")
+  parent     Comment?  @relation("ParentChild", fields: [parentId], references: [id])
+  children   Comment[] @relation("ParentChild")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }

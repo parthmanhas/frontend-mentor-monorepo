@@ -16,12 +16,13 @@ export default function Page() {
     const feedbackId = searchParams.get('id');
     const { data, isLoading, error } = useSWR(`/api/feedback?id=${feedbackId}&replies=true&commentCount=true&parentComments=true`, fetcher);
     const feedback: Feedback & { _count: { comments: number }, comments: Comment[] } = data;
-    console.log(data)
     // const updateFeedback = (updatedFeedback: Feedback & { _count: number }) => {
     //     setFeedback(updatedFeedback);
     // }
 
-    if (isLoading) {
+    // revalidate when a comment is posted
+
+    if (isLoading || !feedback) {
         return <ViewFeedbackLoadingSkeleton />
     }
 

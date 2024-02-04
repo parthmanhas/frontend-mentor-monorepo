@@ -1,33 +1,36 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import Button from "./Button";
-import { IComment } from "../interfaces/interface";
+import { Comment } from "@prisma/client";
 
-export default function PostReply({ rootComments, setRootComments, className, parentDetails, path }: { rootComments: IComment[], setRootComments: Dispatch<SetStateAction<IComment[]>>, className?: string, parentDetails: Pick<IComment, 'id'>, path: string }) {
+interface PostReplyProps {
+    data: any,
+    mutate: Function,
+    parentId: string,
+    feedbackId: string,
+    username: string,
+    email: string,
+    setReplying: Function
+}
 
-    const postReply = () => {
-        const newComment: IComment = {
-            id: 'new-id' + new Date(),
-            parent: parentDetails.id,
-            userId: 'current-user-id',
-            username: 'current-user-name',
-            commentString: reply
-        }
-        // updateComment(rootComments, path, newComment, setRootComments);
+export default function PostReply({ data, mutate, parentId, feedbackId, username, email, setReplying }: PostReplyProps) {
+    const postReply = async () => {
+        const replyComment = { parentId, feedbackId, content: reply, username, email };
+        setLoading(true);
+        await fetch('/api/comment', {
+            method: 'POST',
+            body: JSON.stringify(replyComment)
+        })
+        setReply('');
+        setReplying(false);
+        setLoading(false);
+        mutate([...data, replyComment])
     }
 
-    // const updateComment = (comments: IComment[], path: string, newComment: IComment, setRootComments: Dispatch<SetStateAction<IComment[]>>) => {
-    //     const keys = path.split('.');
-        
-    //     for(let key of keys) {
-    //         comments = comments[key];
-    //     }
-
-    //     comments['comments'] = [newComment];
-    //     setRootComments(comments)
-
-    // }
-
+    const [loading, setLoading] = useState(false);
     const [reply, setReply] = useState('');
+
+    if (loading) return <p>Loading...</p>
+
     return <div className="w-full flex justify-between">
         <textarea value={reply} onChange={e => setReply(e.target.value)} className="grow mr-3 p-4 text-md bg-white-lilac-50 outline-royal-blue-500"></textarea>
         <Button onClick={postReply} className="w-fit h-fit text-white semibold">Post Reply</Button>

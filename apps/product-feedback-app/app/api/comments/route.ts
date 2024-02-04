@@ -11,7 +11,10 @@ export async function GET(req: Request) {
 
     try {
         const comments = await db.comment.findMany({
-            where: { parentId }
+            where: { parentId },
+            orderBy: {
+                createdAt: "desc"
+            }
         })
         return new Response(JSON.stringify(comments), { status: 200 });
     } catch (error) {

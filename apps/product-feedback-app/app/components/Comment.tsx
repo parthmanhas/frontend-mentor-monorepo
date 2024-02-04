@@ -10,11 +10,11 @@ import Comments from './Comments';
 
 export default function Comment({ content, email, feedbackId, id, parentId, username }: IComment) {
 
-    const { data, isLoading, error } = useSWR(`/api/comments?parentId=${id}`, fetcher);
+    const { data, isLoading, error, mutate } = useSWR(`/api/comments?parentId=${id}`, fetcher);
 
     const [replying, setReplying] = useState(false);
 
-    if(isLoading) return <div className='h-16 w-full rounded-md bg-gray-200 animate-pulse'></div>
+    if (isLoading) return <div className='h-16 w-full rounded-md bg-gray-200 animate-pulse'></div>
 
     return <div className={`mt-7 md:border-l-2 md:border-t-2 rounded-[30px]`}>
         {/* <div className='absolute left-0 h-full translate-y-[8%] border-l-2'></div> */}
@@ -43,10 +43,10 @@ export default function Comment({ content, email, feedbackId, id, parentId, user
                     <Button onClick={() => setReplying(!replying)} variant="none"><span className="font-semibold">{replying ? 'Cancel Reply' : 'Reply'}</span></Button>
                 </div>
                 <p className="text-waikawa-gray-700 mb-7">{content}</p>
-                {replying && <PostReply />}
+                {replying && <PostReply mutate={mutate} data={data} setReplying={setReplying} parentId={id} feedbackId={feedbackId} email={email} username={username} />}
             </div>
         </div>
-        <Comments comments={data}/>
+        <Comments comments={data} />
         {/* {comment.comments && comment.comments.map((comment, index) => <Comment rootComments={rootComments} setRootComments={setRootComments} path={path ? `${path}.comments.${index}` : `${comment.id}`} className={`ml-4`} key={`${index}-${comment.id}`} comment={comment} />)} */}
     </div>
 }
