@@ -8,17 +8,5 @@ export default function Tags() {
         <Tag name="Enhancement" />
         <Tag name="Feature" />
         <Tag name="Bug" />
-        <Tag name="All" />
-        <Tag name="UI" />
-        <Tag name="UX" />
-        <Tag name="Enhancement" />
-        <Tag name="Feature" />
-        <Tag name="Bug" />
-        <Tag name="All" />
-        <Tag name="UI" />
-        <Tag name="UX" />
-        <Tag name="Enhancement" />
-        <Tag name="Feature" />
-        <Tag name="Bug" />
     </div>
 }
