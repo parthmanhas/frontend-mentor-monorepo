@@ -1,11 +1,12 @@
 'use client';
 
-import NavbarDesktop from "../components/NavbarDesktop";
-import NavbarMobile from "../components/NavbarMobile";
-import NavbarTab from "../components/NavbarTab";
+import NavbarDesktop from "../../components/NavbarDesktop";
+import NavbarMobile from "../../components/NavbarMobile";
+import NavbarTab from "../../components/NavbarTab";
 import { useMediaQuery } from '@/hooks/use-media-query';
-import SuggestionsBar from "../components/SuggestionsBar";
-import SuggestionsCard from "../components/SuggestionsCard";
+import SuggestionsBar from "../../components/SuggestionsBar";
+import SuggestionsCard from "../../components/SuggestionsCard";
+import Empty from "@/app/components/Empty";
 
 export default function Page() {
     const isMobile = useMediaQuery("(min-width: 0px) and (max-width: 767px)");
@@ -20,16 +21,16 @@ export default function Page() {
         {heading: 'Ability to follow others', description: 'Stay updated on comments and solutions other people post.'},
         {heading: 'Preview images not loading', description: 'Challenge preview images are missing when you apply a filter.'},
     ]
-
     return (
-        <div className="md:p-8 bg-white-lilac-50 h-[100vh]">
+        <div className="md:p-8">
             {isMobile && <NavbarMobile />}
             {isTab && <NavbarTab />}
-            <div className="grid grid-cols-10 gap-4">
-                {isDesktop && <NavbarDesktop className="w-full h-[100vh] col-span-3" />}
-                <div className="w-full h-[100vh] col-span-7">
+            <div className="grid grid-cols-10 gap-4 overflow-y-auto no-scrollbar">
+                {isDesktop && <NavbarDesktop className="w-full col-span-3" />}
+                <div className="w-full col-span-10 md:mt-5 lg:mt-0 lg:col-span-7">
                     <SuggestionsBar />
-                    {suggestions.map(suggestion => <SuggestionsCard heading={suggestion.heading} description={suggestion.description} className="mt-3"/>)}
+                    <Empty />
+                    {/* {suggestions.map((suggestion, index) => <SuggestionsCard key={index} heading={suggestion.heading} description={suggestion.description} className="m-5 md:m-0 md:mt-3"/>)} */}
                 </div>
             </div>
         </div>

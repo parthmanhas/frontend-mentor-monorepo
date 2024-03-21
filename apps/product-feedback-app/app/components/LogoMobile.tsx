@@ -3,6 +3,7 @@ import { RxCross2 } from "react-icons/rx";
 import { RxHamburgerMenu } from "react-icons/rx";
 import Tags from "./Tags";
 import Roadmap from "./Roadmap";
+import clsx from "clsx";
 
 export default function LogoMobile() {
 
@@ -10,8 +11,8 @@ export default function LogoMobile() {
 
     // p-5 on container does not work, width of equal containers changes
     return (
-        <div className="w-full">
-            <div className="flex justify-between items-center relative overflow-hidden">
+        <div className="w-full sticky top-0 z-10">
+            <div className="flex justify-between relative items-center overflow-hidden">
                 <div className="bg-gradient-radial from-pink-500 via-purple-700 to-blue-500 absolute h-[175%] w-[175%] z-0">
                 </div>
                 <div className="bg-gradient-radial from-[#7AD8FB] to-white absolute h-[100%] w-[100%] blur-3xl rounded-full translate-x-[-65%] translate-y-[-65%] z-10"></div>
@@ -24,13 +25,15 @@ export default function LogoMobile() {
                     {drawerOpen ? <RxCross2 size={25} /> : <RxHamburgerMenu size={25} />}
                 </div>
             </div>
-            {drawerOpen && <div className="fixed flex w-full h-[100vh]">
-                <div className="bg-black opacity-50 flex-[0.25] h-[full]"></div>
-                <div className="flex-[0.75] h-full p-5">
+            {/* {drawerOpen && } */}
+            
+            <div className={clsx({"fixed flex w-full translate-x-full transition-all": true, "translate-x-0" : drawerOpen})}>
+                <div className={clsx("bg-black flex-[0.25] h-[full] transition-all", drawerOpen && "opacity-50")}></div>
+                <div className="flex-[0.75] p-5 bg-zircon-50 ">
                     <Tags className="mb-5" />
                     <Roadmap />
                 </div>
-            </div>}
+            </div>
         </div>
     )
 }
