@@ -1,3 +1,4 @@
+import AddComment from "@/app/components/AddComment";
 import Button from "@/app/components/Button";
 import Comments from "@/app/components/Comments";
 import SuggestionsCard from "@/app/components/SuggestionsCard";
@@ -16,5 +17,6 @@ export default function Page() {
         </div>
         <SuggestionsCard heading="Add a dark theme option" description="It would help people with light sensitivities and who prefer dark mode." />
         <Comments />
+        <AddComment />
     </div>
 }
