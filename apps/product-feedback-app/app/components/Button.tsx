@@ -9,7 +9,7 @@ export default function Button({onClick, className = "", children, variant = 'pu
         "bg-electric-violet-600 hover:bg-electric-violet-400": variant === 'purple',
         "bg-royal-blue-600 hover:bg-royal-blue-400": variant === 'blue',
         "bg-alizarin-crimson-600 hover:bg-alizarin-crimson-400": variant === 'red',
-        "bg-east-bay-600 hover:bg-east-bay-400": variant === 'east-bay',
+        "bg-east-bay-900 hover:bg-east-bay-700": variant === 'east-bay',
         "bg-rhino-600 hover:bg-rhino-400": variant === 'rhino',
         "bg-none hover:text-royal-blue-500": variant === 'none',
         [className]: true

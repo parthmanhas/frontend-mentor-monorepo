@@ -12,15 +12,27 @@ export default function Comment({ rootComments, comment, className = '', setRoot
 
     // const [comment, setComment] = useState([]);
 
-    return <div className={`mt-7 ${className} border-l-2 border-t-2 rounded-[30px]`}>
+    return <div className={`mt-7 ${className} md:border-l-2 md:border-t-2 rounded-[30px]`}>
         {/* <div className='absolute left-0 h-full translate-y-[8%] border-l-2'></div> */}
         <div className='flex'>
-            <div className="w-[10%]">
+            <div className="hidden md:block w-[10%]">
                 <div className='h-[50px] w-[50px] rounded-full bg-slate-400'></div>
             </div>
-            <div className='w-[90%] mt-3'>
-                <div className="flex justify-between">
-                    <div className="mb-4">
+            <div className='md:w-[90%] mt-3'>
+                {/* mobile */}
+                <div className="flex justify-between md:hidden">
+                    <div className='flex'>
+                        <div className='h-[50px] w-[50px] rounded-full bg-slate-400 mr-5'></div>
+                        <div className="mb-4 self-start">
+                            <h3>{comment.username}</h3>
+                            <p className="text-waikawa-gray-700">{comment.userId}</p>
+                        </div>
+                    </div>
+                    <Button onClick={() => setReplying(!replying)} variant="none"><span className="font-semibold">{replying ? 'Cancel Reply' : 'Reply'}</span></Button>
+                </div>
+                {/* md above */}
+                <div className="hidden md:flex md:justify-between">
+                    <div className="mb-4 self-start">
                         <h3>{comment.username}</h3>
                         <p className="text-waikawa-gray-700">{comment.userId}</p>
                     </div>

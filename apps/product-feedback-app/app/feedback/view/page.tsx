@@ -5,7 +5,7 @@ import SuggestionsCard from "@/app/components/SuggestionsCard";
 import { FaChevronLeft } from "react-icons/fa";
 
 export default function Page() {
-    return <div className="mx-auto w-1/2 mt-3">
+    return <div className="mx-auto p-4 md:p-0 md:w-3/4 xlw-1/2 mt-3">
         <div className="flex justify-between mb-4 w-full">
             <Button variant="none">
                 <div className="flex items-center">
