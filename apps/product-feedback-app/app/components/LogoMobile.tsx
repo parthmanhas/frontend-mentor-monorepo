@@ -26,8 +26,8 @@ export default function LogoMobile() {
                 </div>
             </div>
             {/* {drawerOpen && } */}
-            
-            <div className={clsx({"fixed flex w-full translate-x-full transition-all": true, "translate-x-0" : drawerOpen})}>
+
+            <div className={clsx({ "fixed flex w-full transition-all z-10 h-full": true, "translate-x-0": drawerOpen, "translate-x-full": !drawerOpen })}>
                 <div className={clsx("bg-black flex-[0.25] h-[full] transition-all", drawerOpen && "opacity-50")}></div>
                 <div className="flex-[0.75] p-5 bg-zircon-50 ">
                     <Tags className="mb-5" />

@@ -22,15 +22,15 @@ export default function Page() {
         {heading: 'Preview images not loading', description: 'Challenge preview images are missing when you apply a filter.'},
     ]
     return (
-        <div className="md:p-8">
+        <div className="md:p-8 max-w-6xl">
             {isMobile && <NavbarMobile />}
             {isTab && <NavbarTab />}
             <div className="grid grid-cols-10 gap-4 overflow-y-auto no-scrollbar">
                 {isDesktop && <NavbarDesktop className="w-full col-span-3" />}
                 <div className="w-full col-span-10 md:mt-5 lg:mt-0 lg:col-span-7">
                     <SuggestionsBar />
-                    <Empty />
-                    {/* {suggestions.map((suggestion, index) => <SuggestionsCard key={index} heading={suggestion.heading} description={suggestion.description} className="m-5 md:m-0 md:mt-3"/>)} */}
+                    {/* <Empty /> */}
+                    {suggestions.map((suggestion, index) => <SuggestionsCard key={index} heading={suggestion.heading} description={suggestion.description} className="m-5 md:m-0 md:mt-3"/>)}
                 </div>
             </div>
         </div>

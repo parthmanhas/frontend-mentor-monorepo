@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jost.className} bg-white-lilac-50 text-white h-screen w-screen`}>{children}</body>
+      <body className={`${jost.className} bg-white-lilac-50 text-white h-screen w-screen flex justify-center`}>{children}</body>
     </html>
   );
 }
