@@ -25,7 +25,7 @@ export default function Page() {
                     <div>
                         <h3>Category</h3>
                         <p className="mt-1">Choose a category for your feedback</p>
-                        <DropDown className="my-8"></DropDown>
+                        <DropDown heading="Category:" options={["Feature", "UI", "UX", "Enhancement", "Bug"]} className="my-8"></DropDown>
                     </div>
                     <div>
                         <h3>Feedback Detail</h3>
