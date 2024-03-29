@@ -1,8 +1,17 @@
+'use client';
+
 import Button from "@/app/components/Button";
 import DropDown from "@/app/components/DropDown";
+import clsx from "clsx";
+import { useState } from "react";
 import { FaCheck, FaPlus, FaChevronLeft } from 'react-icons/fa';
 
 export default function Page() {
+
+    const [feedbackDetail, setFeedbackDetail] = useState('');
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [title, setTitle] = useState('');
+
     return (
         <div className="m-5 flex justify-center">
             <div className="max-w-lg">
@@ -20,7 +29,13 @@ export default function Page() {
                     <div>
                         <h3>Feedback Title</h3>
                         <p className="mt-1">Add a short, descriptive headline</p>
-                        <textarea className="bg-zircon-50 rounded-md w-full my-4 p-4 outline-royal-blue-500"></textarea>
+                        <input onChange={e => setTitle(e.target.value)} value={title} className={clsx({
+                            "bg-zircon-50 rounded-md w-full my-4 p-4": true,
+                            "outline-royal-blue-500": !(title.length === 0 && formSubmitted),
+                            "outline-red-500 border-2 border-red-500": title.length === 0 && formSubmitted
+                        })}></input>
+                        {title.length === 0 && formSubmitted && <p className="text-red-500 mb-4">Can't be empty</p>}
+
                     </div>
                     <div>
                         <h3>Category</h3>
@@ -30,10 +45,17 @@ export default function Page() {
                     <div>
                         <h3>Feedback Detail</h3>
                         <p className="mt-1">Include any specific comments on what should be improved, added, etc.</p>
-                        <textarea className="bg-zircon-50 rounded-md w-full my-4 h-[150px] p-4 outline-royal-blue-500"></textarea>
+                        <textarea onChange={e => setFeedbackDetail(e.target.value)} value={feedbackDetail} className={clsx({
+                            "bg-zircon-50 rounded-md w-full my-4 h-[150px] p-4": true,
+                            "outline-royal-blue-500": !(feedbackDetail.length === 0 && formSubmitted),
+                            "outline-red-500 border-2 border-red-500": feedbackDetail.length === 0 && formSubmitted
+                        })}></textarea>
+                        {feedbackDetail.length === 0 && formSubmitted && <p className="text-red-500">Can't be empty</p>}
                     </div>
-                    <Button className="w-full mb-5 text-white semibold py-3" variant="purple"><span className="w-full">Add Feedback</span></Button>
-                    <Button className="w-full text-white semibold py-3" variant="east-bay"><span className="w-full">Cancel</span></Button>
+                    <div className="md:flex w-full md:justify-end">
+                        <Button onClick={() => setFormSubmitted(true)} className="w-full md:w-fit md:h-fit mb-5 text-white semibold py-3 md:mr-3" variant="purple"><span className="w-full">Add Feedback</span></Button>
+                        <Button onClick={() => { setFormSubmitted(false); setFeedbackDetail(''); setTitle('') }} className="w-full md:w-fit md:h-fit text-white semibold py-3" variant="east-bay"><span className="w-full">Cancel</span></Button>
+                    </div>
                 </div>
             </div>
         </div>
