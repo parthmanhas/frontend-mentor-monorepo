@@ -15,7 +15,7 @@ export default function RoadmapCard({ status, title, subtitle, tags = [], upvote
                 <div className={`w-2 h-2 bg-${status.color}-500 rounded-full mr-3`}></div>
                 <p className="text-waikawa-gray-700">{status.name}</p>
             </div>
-            <p className="font-bold mb-2">{title}</p>
+            <p className="font-bold mb-2 hover:text-royal-blue-500 hover:cursor-pointer">{title}</p>
             <p className="text-waikawa-gray-700 mb-2">{subtitle}</p>
             {/* <Tag name="Feature" /> */}
             {tags.map(tag => <Tag name={tag} />)}
