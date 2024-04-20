@@ -6,7 +6,6 @@ import NavbarTab from "../../components/NavbarTab";
 import { useMediaQuery } from '@/hooks/use-media-query';
 import SuggestionsBar from "../../components/SuggestionsBar";
 import SuggestionsCard from "../../components/SuggestionsCard";
-import Empty from "@/app/components/Empty";
 
 export default function Page() {
     const isMobile = useMediaQuery("(min-width: 0px) and (max-width: 767px)");
@@ -14,12 +13,12 @@ export default function Page() {
     const isDesktop = useMediaQuery("(min-width: 992px)");
 
     const suggestions = [
-        {heading: 'Add tags for solutions', description: 'Easier to search for solutions based on a specific stack.'},
-        {heading: 'Add a dark theme option', description: 'It would help people with light sensitivities and who prefer dark mode.'},
-        {heading: 'Q&A within the challenge hubs', description: 'Challenge-specific Q&A would make for easy reference.'},
-        {heading: 'Allow image/video upload to feedback', description: 'Images and screencasts can enhance comments on solutions.'},
-        {heading: 'Ability to follow others', description: 'Stay updated on comments and solutions other people post.'},
-        {heading: 'Preview images not loading', description: 'Challenge preview images are missing when you apply a filter.'},
+        { heading: 'Add tags for solutions', description: 'Easier to search for solutions based on a specific stack.' },
+        { heading: 'Add a dark theme option', description: 'It would help people with light sensitivities and who prefer dark mode.' },
+        { heading: 'Q&A within the challenge hubs', description: 'Challenge-specific Q&A would make for easy reference.' },
+        { heading: 'Allow image/video upload to feedback', description: 'Images and screencasts can enhance comments on solutions.' },
+        { heading: 'Ability to follow others', description: 'Stay updated on comments and solutions other people post.' },
+        { heading: 'Preview images not loading', description: 'Challenge preview images are missing when you apply a filter.' },
     ]
     return (
         <div className="md:p-8 max-w-6xl">
@@ -30,7 +29,7 @@ export default function Page() {
                 <div className="w-full col-span-10 md:mt-5 lg:mt-0 lg:col-span-7">
                     <SuggestionsBar />
                     {/* <Empty /> */}
-                    {suggestions.map((suggestion, index) => <SuggestionsCard key={index} heading={suggestion.heading} description={suggestion.description} className="m-5 md:m-0 md:mt-3"/>)}
+                    {suggestions.map((suggestion, index) => <SuggestionsCard key={index} heading={suggestion.heading} description={suggestion.description} className="m-5 md:m-0 md:mt-3" />)}
                 </div>
             </div>
         </div>
