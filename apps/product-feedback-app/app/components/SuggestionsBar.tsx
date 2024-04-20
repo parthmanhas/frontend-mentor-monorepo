@@ -1,5 +1,4 @@
 import { TbBulb } from "react-icons/tb";
-import { FaPlus } from "react-icons/fa";
 import DropDown from "./DropDown";
 import Button from "./Button";
 
