@@ -17,16 +17,17 @@ enum Status {
 }
 
 model Feedback {
-  id         String     @id @default(uuid())
+  id         String    @id @default(uuid())
   title      String
   tags       Tag[]
   feedback   String
   comments   Comment[]
   votes      Int
-  categories Category[]
+  category   Category  @relation(fields: [categoryId], references: [id])
   status     Status
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  categoryId String
 }
 
 model User {
@@ -44,10 +45,9 @@ model Tag {
 }
 
 model Category {
-  id         String    @id @default(uuid())
-  name       String
-  Feedback   Feedback? @relation(fields: [feedbackId], references: [id])
-  feedbackId String?
+  id       String     @id @default(uuid())
+  name     String
+  Feedback Feedback[]
 }
 
 model Comment {

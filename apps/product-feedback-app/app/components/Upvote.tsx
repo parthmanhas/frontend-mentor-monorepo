@@ -28,7 +28,7 @@ export default function Upvote({ feedbackId, initialVotes, className = "" }: { f
                 headers: { 'Content-Type': 'application/json' }
             })
             const data = await response.json();
-            console.log(data)
+            
             if (!response.ok) {
                 console.error(`Error Fetching votes ${feedbackId}`);
             } else {

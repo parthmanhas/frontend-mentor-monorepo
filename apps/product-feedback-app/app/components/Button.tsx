@@ -1,10 +1,11 @@
 import clsx from 'clsx';
-import { ReactNode } from 'react';
+import Link from 'next/link';
+import { HTMLInputTypeAttribute, ReactNode } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 
-export default function Button({onClick, className = "", children, variant = 'purple', useDefaultClasses = true }: {onClick?: any, className?: string, children?: ReactNode, variant?: 'purple' | 'blue' | 'red' | 'none' | 'east-bay' | 'rhino', useDefaultClasses?: boolean }) {
-    return <button onClick={onClick} className={clsx({
+export default function Button({ onClick, className = "", type, children, variant = 'purple', useDefaultClasses = true }: { onClick?: any, type: "submit" | "reset" | "button" | undefined, className?: string, children?: ReactNode, variant?: 'purple' | 'blue' | 'red' | 'none' | 'east-bay' | 'rhino', useDefaultClasses?: boolean }) {
+    return <button type={type} onClick={onClick} className={clsx({
         "flex items-center rounded-md p-2 sm:p-3 hover:cursor-pointer": useDefaultClasses,
         "bg-electric-violet-600 hover:bg-electric-violet-400": variant === 'purple',
         "bg-royal-blue-600 hover:bg-royal-blue-400": variant === 'blue',
