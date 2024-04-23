@@ -1,67 +1,17 @@
 'use client';
 
 import Button from "@/app/components/Button";
-import DropDown from "@/app/components/DropDown";
 import clsx from "clsx";
-import { Suspense, useEffect, useState } from "react";
-import { FaCheck, FaPlus, FaChevronLeft } from 'react-icons/fa';
+import { useState } from "react";
+import { FaPlus, FaChevronLeft } from 'react-icons/fa';
 import { addFeedback } from "../_actions/feedback";
-import { Category } from "@prisma/client";
+import Categories from "./_components/categories";
 
-function LoadingCategorySkeleton() {
-    return <div className="w-full mb-5 outline-royal-blue-500 rounded-sm bg-gray-200 h-10"></div>;
-}
-
-function DelayedSelect() {
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 2000); // 2 seconds delay
-        return () => clearTimeout(timer);
-    }, []);
-
-    // if (loading) {
-    //     throw new Promise(resolve => setTimeout(resolve, 2000));
-    // }
-
-    return (
-        <div>
-            <h3>Category</h3>
-            <p className="mt-1">Choose a category for your feedback</p>
-            <select className="w-full mb-5 outline-royal-blue-500 rounded-sm" name="category">
-                <option value="feature">Feature</option>
-                <option value="ui">UI</option>
-                <option value="ux">UX</option>
-                <option value="enhancement">Enhancement</option>
-                <option value="bug">Bug</option>
-            </select>
-        </div>
-    );
-}
 export default function Page() {
 
     const [feedbackDetail, setFeedbackDetail] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [title, setTitle] = useState('');
-
-    const [categories, setCategories] = useState<Category[]>([]);
-
-    useEffect(() => {
-        const getCategories = async () => {
-            const response = await fetch('/api/categories', {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            })
-
-            if (!response.ok) {
-                console.error('Error Fetching categories');
-            }
-
-            const data = await response.json();
-            setCategories(data.categories);
-        }
-        getCategories();
-    }, [])
 
     return (
         <div className="m-5 flex justify-center">
@@ -88,15 +38,7 @@ export default function Page() {
                         {title.length === 0 && formSubmitted && <p className="text-red-500 mb-4">Can't be empty</p>}
 
                     </div>
-                    <Suspense fallback={<LoadingCategorySkeleton />}>
-                        <div>
-                            <h3>Category</h3>
-                            <p className="mt-1">Choose a category for your feedback</p>
-                            <select className="w-full mb-5 outline-royal-blue-500 rounded-sm" name="category">
-                                {categories?.map((category: Category) => <option value={category.name}>{category.name.toUpperCase()}</option>)}
-                            </select>
-                        </div>
-                    </Suspense>
+                    <Categories />
                     <div>
                         <h3>Feedback Detail</h3>
                         <p className="mt-1">Include any specific comments on what should be improved, added, etc.</p>
