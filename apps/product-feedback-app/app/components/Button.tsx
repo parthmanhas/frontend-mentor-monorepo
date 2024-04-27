@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import Link from 'next/link';
-import { HTMLInputTypeAttribute, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { FaPlus } from 'react-icons/fa';
 
 

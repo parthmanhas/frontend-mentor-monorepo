@@ -2,24 +2,23 @@
 
 import { FaChevronLeft } from "react-icons/fa6";
 import Button from "../components/Button";
-import Tag from "../components/Tag";
-import Upvote from "../components/Upvote";
-import CommentsNumber from "../components/CommentsNumber";
 import RoadmapCard from "../components/RoadmapCard";
-import { Live, Status } from '@/app/interfaces/interface';
+import { Status } from '@/app/interfaces/interface';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useState } from "react";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
 
     const isMobile = useMediaQuery("(min-width: 0px) and (max-width: 767px)");
     const [tab, setTab] = useState<Status>({ name: "Planned", color: "yellow" });
+    const router = useRouter();
 
     const mobileUI = <div className="w-full">
         <div className="bg-east-bay-900 flex justify-between items-center w-full p-4">
             <div>
-                <Button variant="none" useDefaultClasses={false} className="flex items-center hover:cursor-pointer mb-1">
+                <Button onClick={() => router.back()} variant="none" useDefaultClasses={false} className="flex items-center hover:cursor-pointer mb-1">
                     <div className="flex items-center">
                         <FaChevronLeft color="white" className="mr-2" />
                         <p className="font-semibold text-white">Go Back</p>
@@ -81,7 +80,7 @@ export default function Page() {
     const mobileAboveUI = <div className="w-full max-w-6xl md:p-7 xl:p-0">
         <div className="bg-east-bay-900 flex justify-between items-center p-5 w-full rounded-md mt-3">
             <div>
-                <Button variant="none" useDefaultClasses={false} className="flex items-center hover:cursor-pointer mb-1">
+                <Button onClick={() => router.back()} variant="none" useDefaultClasses={false} className="flex items-center hover:cursor-pointer mb-1">
                     <div className="flex items-center">
                         <FaChevronLeft color="white" className="mr-2" />
                         <p className="font-semibold text-white">Go Back</p>

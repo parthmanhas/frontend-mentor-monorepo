@@ -5,8 +5,9 @@ import clsx from "clsx";
 import { useState } from "react";
 import { FaPlus, FaChevronLeft } from 'react-icons/fa';
 import { addFeedback } from "../_actions/feedback";
-import Categories from "./_components/categories";
+import Categories from "../../components/categories";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
 
@@ -14,10 +15,12 @@ export default function Page() {
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [title, setTitle] = useState('');
 
+    const router = useRouter();
+
     return (
         <div className="m-5 flex justify-center">
             <div className="max-w-lg">
-                <Button type="button" className="mb-8" variant="none">
+                <Button onClick={() => router.back()} type="button" className="mb-8" variant="none">
                     <div className="flex items-center">
                         <FaChevronLeft color="blue" className="mr-2" />
                         <p className="text-waikawa-gray-700 font-semibold">Go Back</p>
