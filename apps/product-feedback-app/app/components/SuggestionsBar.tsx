@@ -1,6 +1,7 @@
 import { TbBulb } from "react-icons/tb";
 import DropDown from "./DropDown";
 import Button from "./Button";
+import Link from "next/link";
 
 export default function SuggestionsBar() {
     return <div className="bg-east-bay-900 md:rounded-md p-5 flex items-center justify-between">
@@ -9,6 +10,8 @@ export default function SuggestionsBar() {
             <h2 className="ml-3 hidden md:block">6 Suggestions</h2>
             <DropDown heading="Sort By:" options={['Most Upvotes', 'Most Downvotes', 'Most Comments', 'Least Comments']} className="ml-3 sm:ml-7 bg-east-bay-900" />
         </div>
-        <Button />
+        <Link href="/feedback/new">
+            <Button />
+        </Link>
     </div>
 }

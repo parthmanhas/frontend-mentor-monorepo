@@ -3,6 +3,7 @@ import Dropdown from "@/app/components/DropDown";
 import TextArea from "@/app/components/TextArea";
 import Button from "@/app/components/Button";
 import { FaPen, FaChevronLeft } from 'react-icons/fa';
+import Link from "next/link";
 
 export default function Page() {
     return (
@@ -26,8 +27,12 @@ export default function Page() {
                 <div className="md:flex md:justify-between mt-7">
                     <Button variant="red" className="text-white font-semibold justify-center w-full mb-4 md:mb-0 md:w-fit">Delete</Button>
                     <div className="md:flex">
-                        <Button variant="east-bay" className="text-white font-semibold mr-3 w-full justify-center md:w-fit mb-4 md:mb-0">Cancel</Button>
-                        <Button className="text-white font-semibold justify-center w-full md:mb-0">Add Feedback</Button>
+                        <Link href="/feedback/all">
+                            <Button variant="east-bay" className="text-white font-semibold mr-3 w-full justify-center md:w-fit mb-4 md:mb-0">Cancel</Button>
+                        </Link>
+                        <Link href="/feedback/new">
+                            <Button className="text-white font-semibold justify-center w-full md:mb-0">Add Feedback</Button>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -2,13 +2,20 @@ import SuggestionsCard from '@/app/components/SuggestionsCard';
 import db from '@/db/db';
 
 const getFeedbacks = async () => {
+
+    const pageNumber = 1; // replace with current page number
+    const pageSize = 10; // replace with number of records per page
+
     const feedbacks = await db.feedback.findMany({
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
         include: {
             _count: {
                 select: { comments: true },
             },
         },
     });
+
     return feedbacks;
 }
 

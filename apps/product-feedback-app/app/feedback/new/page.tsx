@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FaPlus, FaChevronLeft } from 'react-icons/fa';
 import { addFeedback } from "../_actions/feedback";
 import Categories from "./_components/categories";
+import Link from "next/link";
 
 export default function Page() {
 
@@ -30,7 +31,7 @@ export default function Page() {
                     <div>
                         <h3>Feedback Title</h3>
                         <p className="mt-1">Add a short, descriptive headline</p>
-                        <input name="title" onChange={e => setTitle(e.target.value)} value={title} className={clsx({
+                        <input required name="title" onChange={e => setTitle(e.target.value)} value={title} className={clsx({
                             "bg-zircon-50 rounded-md w-full my-4 p-4": true,
                             "outline-royal-blue-500": !(title.length === 0 && formSubmitted),
                             "outline-red-500 border-2 border-red-500": title.length === 0 && formSubmitted
@@ -42,7 +43,7 @@ export default function Page() {
                     <div>
                         <h3>Feedback Detail</h3>
                         <p className="mt-1">Include any specific comments on what should be improved, added, etc.</p>
-                        <textarea name="feedback" onChange={e => setFeedbackDetail(e.target.value)} value={feedbackDetail} className={clsx({
+                        <textarea required name="feedback" onChange={e => setFeedbackDetail(e.target.value)} value={feedbackDetail} className={clsx({
                             "bg-zircon-50 rounded-md w-full my-4 h-[150px] p-4": true,
                             "outline-royal-blue-500": !(feedbackDetail.length === 0 && formSubmitted),
                             "outline-red-500 border-2 border-red-500": feedbackDetail.length === 0 && formSubmitted
@@ -51,7 +52,9 @@ export default function Page() {
                     </div>
                     <div className="md:flex w-full md:justify-end">
                         <Button type="submit" onClick={() => setFormSubmitted(true)} className="w-full md:w-fit md:h-fit mb-5 text-white semibold py-3 md:mr-3" variant="purple"><span className="w-full">Add Feedback</span></Button>
-                        <Button type="button" onClick={() => { setFormSubmitted(false); setFeedbackDetail(''); setTitle('') }} className="w-full md:w-fit md:h-fit text-white semibold py-3" variant="east-bay"><span className="w-full">Cancel</span></Button>
+                        <Link href="/feedback/all">
+                            <Button type="button" onClick={() => { setFormSubmitted(false); setFeedbackDetail(''); setTitle('') }} className="w-full md:w-fit md:h-fit text-white semibold py-3" variant="east-bay"><span className="w-full">Cancel</span></Button>
+                        </Link>
                     </div>
                 </form>
             </div>

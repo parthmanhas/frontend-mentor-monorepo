@@ -15,8 +15,8 @@ export default function Categories() {
     return <div>
         <h3>Category</h3>
         <p className="mt-1">Choose a category for your feedback</p>
-        <select className="w-full mb-5 outline-royal-blue-500 rounded-sm" name="category">
-            {categories?.map((category: Category, index: number) => <option key={index} value={category.name}>{category.name.toUpperCase()}</option>)}
+        <select className="w-full mb-5 outline-royal-blue-500 rounded-sm" name="categoryId">
+            {categories?.map((category: Category, index: number) => <option key={index} value={category.id}>{category.name.toUpperCase()}</option>)}
         </select>
     </div>
 }
