@@ -7,7 +7,8 @@ import { FaChevronUp } from "react-icons/fa6";
 export default function Upvote({ feedbackId, initialVotes, className = "" }: { feedbackId: string, initialVotes: number, className?: string }) {
     const [votes, setVotes] = useState(initialVotes);
 
-    const vote = async () => {
+    const vote = async (e) => {
+        e.preventDefault();
         const response = await fetch('/api/vote', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

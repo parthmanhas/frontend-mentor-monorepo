@@ -35,16 +35,15 @@ export default function SuggestionsCard({ className, data }: {
     const handleDragOver = (e) => {
         e.preventDefault();
     };
-
     return <Link href={`/feedback/edit?id=${data.id}`}>
         <div onDrop={handleDrop} onDragOver={handleDragOver} className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
             <div className="col-span-1 hidden md:block">
                 <Upvote feedbackId={data.id} initialVotes={data.votes} />
             </div>
-            <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0">
+            <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
                 <h3 className="text-east-bay-900 mb-1">{data.title}</h3>
                 <p className="text-waikawa-gray-700 mb-2">{data.feedback}</p>
-                <Tag name="Enhancement" />
+                <Tag name="Enhancement"/>
                 <div className="flex justify-between grow-1 md:hidden">
                     <Upvote feedbackId={data.id} initialVotes={data.votes} />
                     <CommentsNumber count={data._count.comments} />

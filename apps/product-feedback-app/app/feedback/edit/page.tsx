@@ -49,7 +49,7 @@ export default function Page() {
                 </div>
 
                 <h1 className="text-east-bay-900 my-8">Editing feedback title</h1>
-                <input hidden name="feedbackId" value={data.id} />
+                <input hidden name="feedbackId" defaultValue={data.id} />
                 <Input name="title" className="mb-8" title="Feedback Title" subtitle="Add a short, descriptive, headline" defaultValue={data.title} />
                 <Statuses className="mb-5" />
                 <Categories className="mb-5" defaultValue={data.category} />
