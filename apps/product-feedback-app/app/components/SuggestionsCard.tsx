@@ -1,56 +1,119 @@
 'use client';
 
-import { Feedback } from "@prisma/client";
+import { Feedback, Tag } from "@prisma/client";
 import CommentsNumber from "./CommentsNumber";
-import Tag from "./Tag";
+import TagComponent from "./Tag";
 import Upvote from "./Upvote";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function SuggestionsCard({ className, data }: {
     className?: string, data: {
         _count: {
             comments: number;
-        };
+        },
+        tags: Tag[]
     } & Feedback
 }) {
 
+    const [feedbackData, setFeedbackData] = useState(data);
+    const [loading, setLoading] = useState(false);
+
     const handleDrop = async (e) => {
         e.preventDefault();
-        const tagId = e.dataTransfer.getData('text/plain');
-
+        const draggedTag = JSON.parse(e.dataTransfer.getData('text/json')) as Tag;
+        if (feedbackData.tags.some(tag => tag.id === draggedTag.id)) {
+            console.info('Tag already exists');
+            return;
+        }
+        setLoading(true);
         const response = await fetch('/api/feedback', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tagId, feedbackId: data.id })
+            body: JSON.stringify({ tagId: draggedTag.id, feedbackId: feedbackData.id })
         })
+        setLoading(false);
 
         if (!response.ok) {
             console.error('Error updating feedback with tagId');
         }
 
-        // const data = await response.json();
-        // return data;
+        updateFeedbackOnChange();
     };
+
+    const updateFeedbackOnChange = async () => {
+        setLoading(true);
+        const updatedFeedbackResponse = await fetch(`/api/feedback?id=${data.id}&tags=true&commentsCount=true`);
+        const updatedFeedback = await updatedFeedbackResponse.json();
+        setLoading(false);
+        if (updatedFeedback == null) {
+            console.error('Feedback updated, but failed to fetch updated feedback');
+            return;
+        }
+
+        setFeedbackData(updatedFeedback);
+    }
 
     const handleDragOver = (e) => {
         e.preventDefault();
     };
-    return <Link href={`/feedback/edit?id=${data.id}`}>
+
+    const handleTagDelete = async (e: React.MouseEvent<HTMLSpanElement>, id: string) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await fetch('/api/tags', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ feedbackId: data.id, tagId: id })
+            })
+            updateFeedbackOnChange();
+        } catch (error) {
+            console.error(`Failed to delete tag with id: ${id}`);
+            setLoading(false);
+        }
+    }
+
+    if (loading) return <div className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
+        <div className="col-span-1 hidden md:block">
+            <div className="bg-gray-200 animate-pulse w-12 h-12"></div>
+        </div>
+        <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0">
+            <div className="bg-gray-200 animate-pulse w-48 h-4 mb-2"></div>
+            <div className="bg-gray-200 animate-pulse w-full h-12 mb-2"></div>
+            <div className="flex flex-wrap">
+                <div className="bg-gray-200 animate-pulse w-16 h-4 mr-2"></div>
+                <div className="bg-gray-200 animate-pulse w-16 h-4 mr-2"></div>
+                <div className="bg-gray-200 animate-pulse w-16 h-4 mr-2"></div>
+            </div>
+            <div className="flex justify-between grow-1 md:hidden">
+                <div className="bg-gray-200 animate-pulse w-12 h-12"></div>
+                <div className="bg-gray-200 animate-pulse w-8 h-4"></div>
+            </div>
+        </div>
+        <div className="col-span-1 hidden md:flex">
+            <div className="bg-gray-200 animate-pulse w-8 h-4"></div>
+        </div>
+    </div>
+
+    return <Link href={`/feedback/edit?id=${feedbackData.id}`}>
         <div onDrop={handleDrop} onDragOver={handleDragOver} className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
             <div className="col-span-1 hidden md:block">
-                <Upvote feedbackId={data.id} initialVotes={data.votes} />
+                <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />
             </div>
             <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
-                <h3 className="text-east-bay-900 mb-1">{data.title}</h3>
-                <p className="text-waikawa-gray-700 mb-2">{data.feedback}</p>
-                <Tag name="Enhancement"/>
+                <h3 className="text-east-bay-900 mb-1">{feedbackData.title}</h3>
+                <p className="text-waikawa-gray-700 mb-2">{feedbackData.feedback}</p>
+                <div className="flex flex-wrap">
+                    {feedbackData.tags?.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
+                </div>
                 <div className="flex justify-between grow-1 md:hidden">
-                    <Upvote feedbackId={data.id} initialVotes={data.votes} />
-                    <CommentsNumber count={data._count.comments} />
+                    <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />
+                    <CommentsNumber count={feedbackData._count?.comments} />
                 </div>
             </div>
             <div className="col-span-1 hidden md:flex">
-                <CommentsNumber count={data._count.comments} />
+                <CommentsNumber count={feedbackData._count?.comments} />
             </div>
         </div>
     </Link>

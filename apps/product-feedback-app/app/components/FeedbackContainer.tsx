@@ -13,6 +13,7 @@ const getFeedbacks = async () => {
             _count: {
                 select: { comments: true },
             },
+            tags: true
         },
     });
 
