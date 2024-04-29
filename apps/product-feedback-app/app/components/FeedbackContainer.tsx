@@ -1,28 +1,40 @@
 import SuggestionsCard from '@/app/components/SuggestionsCard';
-import db from '@/db/db';
+import useSWR from 'swr';
+import { fetcher } from '../utils/utils';
+import { Feedback, Tag } from '@prisma/client';
+import { ISortOption } from '../constants/constants';
 
-const getFeedbacks = async () => {
+type GetFeedbacks = ({
+    _count: {
+        comments: number;
+    },
+    tags: Tag[]
+} & Feedback)[];
 
-    const pageNumber = 1; // replace with current page number
-    const pageSize = 10; // replace with number of records per page
+type GetFeedback = {
+    _count: {
+        comments: number;
+    },
+    tags: Tag[]
+} & Feedback;
 
-    const feedbacks = await db.feedback.findMany({
-        skip: (pageNumber - 1) * pageSize,
-        take: pageSize,
-        include: {
-            _count: {
-                select: { comments: true },
-            },
-            tags: true
-        },
-    });
-
-    return feedbacks;
+export default function FeedbackContainer({ sortOption }: { sortOption: ISortOption }) {
+    const { data, isLoading, error } = useSWR(`/api/feedbacks?sort=${sortOption.queryParam}`, fetcher);
+    const feedbacks = data as GetFeedbacks;
+    return <>
+        {isLoading ? <SuggestionsCardSkeleton /> : feedbacks.map((feedback: GetFeedback, index: number) => <SuggestionsCard key={index} data={feedback} className="m-5 md:m-0 md:mt-3" />)}
+    </>
 }
 
-export default async function FeedbackContainer() {
-    const feedbacks = await getFeedbacks();
-    return <>
-        {feedbacks.map((feedback, index) => <SuggestionsCard key={index} data={feedback} className="m-5 md:m-0 md:mt-3" />)}
-    </>
+function SuggestionsCardSkeleton() {
+    return (
+        <div className="m-5 md:m-0 md:mt-3 animate-pulse">
+            <div className="bg-gray-300 rounded w-full h-20 mb-4"></div>
+            <div className="grid grid-cols-3 gap-4">
+                <div className="bg-gray-300 rounded w-full h-10"></div>
+                <div className="bg-gray-300 rounded w-full h-10"></div>
+                <div className="bg-gray-300 rounded w-full h-10"></div>
+            </div>
+        </div>
+    );
 }

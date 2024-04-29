@@ -9,7 +9,7 @@ import LogoMobile from '@/app/components/LogoMobile';
 import SuggestionsBar from '@/app/components/SuggestionsBar';
 import { ReactNode } from 'react';
 
-export default function Navbar({ children }: { children: ReactNode }) {
+export default function Navbar({ children, handleSortChange}: { children: ReactNode, handleSortChange: Function}) {
 
     const isMobile = useMediaQuery("(min-width: 0px) and (max-width: 767px)");
     const isTab = useMediaQuery("(min-width: 768px) and (max-width: 991px)");
@@ -22,7 +22,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
             <Roadmap />
         </div>
         <div className="w-full col-span-10 md:mt-5 lg:mt-0 lg:col-span-7">
-            <SuggestionsBar />
+            <SuggestionsBar handleSortChange={handleSortChange}/>
             {children}
         </div>
     </div>
@@ -33,12 +33,12 @@ export default function Navbar({ children }: { children: ReactNode }) {
             <Tags />
             <Roadmap />
         </div>
-        <SuggestionsBar />
+        <SuggestionsBar handleSortChange={handleSortChange} />
         {children}
     </div>
     const mobileNavbar = isMobile && <div className='w-full'>
         <LogoMobile />
-        <SuggestionsBar />
+        <SuggestionsBar handleSortChange={handleSortChange}/>
         {children}
     </div>
 

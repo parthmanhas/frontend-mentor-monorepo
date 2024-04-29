@@ -8,14 +8,14 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function SuggestionsCard({ className, data }: {
-    className?: string, data: {
+    className?: string,
+    data: {
         _count: {
             comments: number;
         },
         tags: Tag[]
     } & Feedback
 }) {
-
     const [feedbackData, setFeedbackData] = useState(data);
     const [loading, setLoading] = useState(false);
 
@@ -73,8 +73,35 @@ export default function SuggestionsCard({ className, data }: {
             setLoading(false);
         }
     }
+    
 
-    if (loading) return <div className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
+    if (loading) return <LoadingSkeletonSuggestionsCard />
+
+    return <Link href={`/feedback/view?id=${feedbackData?.id}`}>
+        <div onDrop={handleDrop} onDragOver={handleDragOver} className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer relative`}>
+            <div className="col-span-1 hidden md:block">
+                <Upvote feedbackId={feedbackData?.id} initialVotes={feedbackData?.votes} />
+            </div>
+            <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
+                <h3 className="text-east-bay-900 mb-1">{feedbackData?.title}</h3>
+                <p className="text-waikawa-gray-700 mb-2">{feedbackData?.feedback}</p>
+                <div className="flex flex-wrap">
+                    {feedbackData?.tags?.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
+                </div>
+                <div className="flex justify-between grow-1 md:hidden">
+                    <Upvote feedbackId={feedbackData?.id} initialVotes={feedbackData?.votes} />
+                    <CommentsNumber count={feedbackData?._count?.comments} />
+                </div>
+            </div>
+            <div className="col-span-1 hidden md:flex">
+                <CommentsNumber count={feedbackData?._count?.comments} />
+            </div>
+        </div>
+    </Link>
+}
+
+function LoadingSkeletonSuggestionsCard({ className }: { className?: string }) {
+    return <div className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
         <div className="col-span-1 hidden md:block">
             <div className="bg-gray-200 animate-pulse w-12 h-12"></div>
         </div>
@@ -95,26 +122,4 @@ export default function SuggestionsCard({ className, data }: {
             <div className="bg-gray-200 animate-pulse w-8 h-4"></div>
         </div>
     </div>
-
-    return <Link href={`/feedback/edit?id=${feedbackData.id}`}>
-        <div onDrop={handleDrop} onDragOver={handleDragOver} className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer`}>
-            <div className="col-span-1 hidden md:block">
-                <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />
-            </div>
-            <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
-                <h3 className="text-east-bay-900 mb-1">{feedbackData.title}</h3>
-                <p className="text-waikawa-gray-700 mb-2">{feedbackData.feedback}</p>
-                <div className="flex flex-wrap">
-                    {feedbackData.tags?.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
-                </div>
-                <div className="flex justify-between grow-1 md:hidden">
-                    <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />
-                    <CommentsNumber count={feedbackData._count?.comments} />
-                </div>
-            </div>
-            <div className="col-span-1 hidden md:flex">
-                <CommentsNumber count={feedbackData._count?.comments} />
-            </div>
-        </div>
-    </Link>
 }
