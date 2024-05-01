@@ -7,14 +7,11 @@ import Upvote from "./Upvote";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function SuggestionsCard({ className, data }: {
+export default function SuggestionsCard({ className, data, commentsCount, tags }: {
     className?: string,
-    data: {
-        _count: {
-            comments: number;
-        },
-        tags: Tag[]
-    } & Feedback
+    data: Feedback,
+    commentsCount: number,
+    tags?: Tag[]
 }) {
     const [feedbackData, setFeedbackData] = useState(data);
     const [loading, setLoading] = useState(false);
@@ -22,7 +19,7 @@ export default function SuggestionsCard({ className, data }: {
     const handleDrop = async (e) => {
         e.preventDefault();
         const draggedTag = JSON.parse(e.dataTransfer.getData('text/json')) as Tag;
-        if (feedbackData.tags.some(tag => tag.id === draggedTag.id)) {
+        if (tags.some(tag => tag.id === draggedTag.id)) {
             console.info('Tag already exists');
             return;
         }
@@ -73,7 +70,7 @@ export default function SuggestionsCard({ className, data }: {
             setLoading(false);
         }
     }
-    
+
 
     if (loading) return <LoadingSkeletonSuggestionsCard />
 
@@ -85,16 +82,16 @@ export default function SuggestionsCard({ className, data }: {
             <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
                 <h3 className="text-east-bay-900 mb-1">{feedbackData?.title}</h3>
                 <p className="text-waikawa-gray-700 mb-2">{feedbackData?.feedback}</p>
-                <div className="flex flex-wrap">
-                    {feedbackData?.tags?.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
-                </div>
+                {tags && <div className="flex flex-wrap">
+                    {tags.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
+                </div>}
                 <div className="flex justify-between grow-1 md:hidden">
                     <Upvote feedbackId={feedbackData?.id} initialVotes={feedbackData?.votes} />
-                    <CommentsNumber count={feedbackData?._count?.comments} />
+                    <CommentsNumber count={commentsCount} />
                 </div>
             </div>
             <div className="col-span-1 hidden md:flex">
-                <CommentsNumber count={feedbackData?._count?.comments} />
+                <CommentsNumber count={commentsCount} />
             </div>
         </div>
     </Link>

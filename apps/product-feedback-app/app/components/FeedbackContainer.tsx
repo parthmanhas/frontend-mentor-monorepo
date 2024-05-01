@@ -22,7 +22,16 @@ export default function FeedbackContainer({ sortOption }: { sortOption: ISortOpt
     const { data, isLoading, error } = useSWR(`/api/feedbacks?sort=${sortOption.queryParam}`, fetcher);
     const feedbacks = data as GetFeedbacks;
     return <>
-        {isLoading ? <SuggestionsCardSkeleton /> : feedbacks.map((feedback: GetFeedback, index: number) => <SuggestionsCard key={index} data={feedback} className="m-5 md:m-0 md:mt-3" />)}
+        {isLoading ?
+            <SuggestionsCardSkeleton /> :
+            feedbacks.map(
+                (feedback: GetFeedback, index: number) =>
+                    <SuggestionsCard key={index}
+                        data={feedback}
+                        commentsCount={feedback._count.comments}
+                        tags={feedback.tags}
+                        className="m-5 md:m-0 md:mt-3"
+                    />)}
     </>
 }
 

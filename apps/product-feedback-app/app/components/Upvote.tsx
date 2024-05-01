@@ -37,7 +37,6 @@ export default function Upvote({ feedbackId, initialVotes, className = "" }: { f
                 setVotes(data.votes);
             }
         }
-        fetchVotes();
     }, [])
 
     return <div onClick={vote} className={clsx({
