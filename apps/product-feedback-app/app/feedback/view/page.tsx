@@ -9,13 +9,14 @@ import { Feedback } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaChevronLeft } from "react-icons/fa";
 import useSWR from "swr";
+import { Comment as IComment } from '@prisma/client';
 
 export default function Page() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const feedbackId = searchParams.get('id');
-    const { data, isLoading, error } = useSWR(`/api/feedback?id=${feedbackId}&replies=true&commentCount=true&parentComments=true`, fetcher);
-    const feedback: Feedback & { _count: { comments: number }, comments: Comment[] } = data;
+    const { data, isLoading, error, mutate } = useSWR(`/api/feedback?id=${feedbackId}&replies=true&commentCount=true&parentComments=true`, fetcher);
+    const feedback: Feedback & { _count: { comments: number }, comments: IComment[] } = data;
     // const updateFeedback = (updatedFeedback: Feedback & { _count: number }) => {
     //     setFeedback(updatedFeedback);
     // }
@@ -41,7 +42,7 @@ export default function Page() {
             <h2>{feedback._count.comments} Comments</h2>
             <Comments comments={feedback.comments} />
         </div>
-        {feedbackId && <AddComment feedbackId={feedbackId} />}
+        {feedbackId && <AddComment feedback={feedback} email="parthmanhas@gmail.com" username="parthmanhas" mutate={mutate} feedbackId={feedbackId} />}
     </div>
 }
 
