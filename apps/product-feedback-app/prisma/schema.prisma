@@ -58,7 +58,7 @@ model Comment {
   parentId   String?
   feedbackId String
   content    String
-  Feedback   Feedback  @relation(fields: [feedbackId], references: [id])
+  Feedback   Feedback  @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
   User       User      @relation(fields: [username, email], references: [username, email])
   username   String
   email      String
