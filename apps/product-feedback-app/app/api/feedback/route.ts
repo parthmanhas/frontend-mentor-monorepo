@@ -1,42 +1,29 @@
 import db from "@/db/db";
-import { z } from "zod";
-
-const PATCH_SCHEMA = z.object({
-    feedbackId: z.string(),
-    tagId: z.string(),
-    comment: z.object({
-        parentId: z.string(),
-        feedbackId: z.string(),
-        data: z.string(),
-        userId: z.string()
-    }),
-    user: z.object({
-        email: z.string()
-    })
-})
 
 export async function PATCH(req: Request, res: Response) {
     const body = await req.json();
-    const { feedbackId, tagId, comment, user } = body;
+    const { feedbackId, tagId, comment } = body;
 
     try {
         const res = await db.feedback.update({
             where: { id: feedbackId },
-            ...tagId || comment && {
+            ...((tagId || comment) && {
                 data: {
-                    ...tagId && {
+                    ...(tagId && {
                         tags: {
                             connect: { id: tagId },
                         }
-                    },
-                    ...comment && {
+                    }),
+                    ...(comment && {
                         comments: {
                             create: comment
                         }
-                    }
+                    })
                 }
-            },
+            }),
+            // for response
             include: {
+                tags: true,
                 comments: true,
                 _count: {
                     select: { comments: true }
@@ -64,20 +51,20 @@ export async function GET(req: Request) {
     const feedback = await db.feedback.findUnique({
         where: { id: feedbackId },
         include: {
-            ...includeCommentCount && {
+            ...(includeCommentCount && {
                 _count: {
                     select: { comments: true },
                 },
-            },
-            ...includeTags && { tags: true },
-            ...includeAllComments && {
+            }),
+            ...(includeTags && { tags: true }),
+            ...(includeAllComments && {
                 comments: true
-            },
-            ...parentCommentsOnly && {
+            }),
+            ...(parentCommentsOnly && {
                 comments: {
                     where: { parentId: null }
                 }
-            }
+            })
         }
     })
 
