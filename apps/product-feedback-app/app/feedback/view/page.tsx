@@ -42,6 +42,7 @@ export default function Page() {
             <h2>{feedback._count.comments} Comments</h2>
             <Comments comments={feedback.comments} />
         </div>
+        {/* hardcoded */}
         {feedbackId && <AddComment feedback={feedback} email="parthmanhas@gmail.com" username="parthmanhas" mutate={mutate} feedbackId={feedbackId} />}
     </div>
 }

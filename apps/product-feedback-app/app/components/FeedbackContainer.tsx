@@ -2,16 +2,16 @@ import SuggestionsCard from '@/app/components/SuggestionsCard';
 import useSWR from 'swr';
 import { fetcher } from '../utils/utils';
 import { Feedback, Tag } from '@prisma/client';
-import { ISortOption } from '../constants/constants';
+import { ISortOption, SORT_OPTION, SORT_TYPES } from '../constants/constants';
 
-type GetFeedbacks = ({
+type SortedFeedbacks = ({
     _count: {
         comments: number;
     },
     tags: Tag[]
 } & Feedback)[];
 
-type GetFeedback = {
+type SortFeedback = {
     _count: {
         comments: number;
     },
@@ -19,13 +19,21 @@ type GetFeedback = {
 } & Feedback;
 
 export default function FeedbackContainer({ sortOption }: { sortOption: ISortOption }) {
-    const { data, isLoading, error } = useSWR(`/api/feedbacks?sort=${sortOption.queryParam}`, fetcher);
-    const feedbacks = data as GetFeedbacks;
+    const { data, isLoading, error } = useSWR(`/api/feedbacks?sort=${sortOption.id}`, fetcher);
+    let feedbacks = data as SortedFeedbacks;
+
+    if (sortOption.id === SORT_TYPES.MOST_COMMENTS) {
+        feedbacks = feedbacks.sort((a, b) => b._count.comments - a._count.comments);
+    } else if (sortOption.id === SORT_TYPES.LEAST_COMMENTS) {
+        feedbacks = feedbacks.sort((a, b) => a._count.comments - b._count.comments);
+    }
+
+
     return <>
         {isLoading ?
             <SuggestionsCardSkeleton /> :
             feedbacks.map(
-                (feedback: GetFeedback, index: number) =>
+                (feedback: SortFeedback, index: number) =>
                     <SuggestionsCard key={index}
                         data={feedback}
                         commentsCount={feedback._count.comments}

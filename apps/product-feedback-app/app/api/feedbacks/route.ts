@@ -13,16 +13,16 @@ export async function GET(req: Request) {
                 },
                 tags: true
             },
-            ...sortOption === 'most_votes' && {
+            ...(sortOption === 'most_upvotes' && {
                 orderBy: {
-                    votes: 'desc'
+                    votes: 'desc',
                 }
-            },
-            ...sortOption === 'most_downvotes' && {
+            }),
+            ...(sortOption === 'least_upvotes' && {
                 orderBy: {
                     votes: 'asc'
                 }
-            }
+            }),
         });
         return new Response(JSON.stringify([...feedbacks]), { status: 200 });
     } catch (error) {

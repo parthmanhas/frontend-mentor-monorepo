@@ -1,8 +1,7 @@
 import { User } from '@prisma/client';
 export interface ISortOption {
-    id: number,
-    name: string,
-    queryParam: string
+    id: string,
+    name: string
 }
 
 export interface IPostCommentPatchRequest {
@@ -14,9 +13,17 @@ export interface IPostCommentPatchRequest {
     user: Partial<User>
 }
 
+export const SORT_TYPES = {
+    MOST_UPVOTES: 'most_upvotes',
+    LEAST_UPVOTES: 'least_upvotes',
+    MOST_COMMENTS: 'most_comments',
+    LEAST_COMMENTS: 'least_comments',
+}
+
 export const SORT_OPTION: ISortOption[] = [
-    { id: 1, name: "Most Upvotes", queryParam: "most_upvotes" },
-    { id: 2, name: "Most Downvotes", queryParam: "most_downvotes" },
-    { id: 3, name: "Most Comments", queryParam: "most_comments" },
-    { id: 4, name: "Least Comments", queryParam: "least_comments" },
+    { id: SORT_TYPES.MOST_UPVOTES, name: "Most Upvotes" },
+    { id: SORT_TYPES.LEAST_UPVOTES, name: "Least Upvotes" },
+    { id: SORT_TYPES.MOST_COMMENTS, name: "Most Comments" },
+    { id: SORT_TYPES.LEAST_COMMENTS, name: "Least Comments" },
 ]
+

@@ -5,7 +5,7 @@ import CommentsNumber from "./CommentsNumber";
 import TagComponent from "./Tag";
 import Upvote from "./Upvote";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function SuggestionsCard({ className, data, commentsCount, tags }: {
     className?: string,
@@ -60,10 +60,11 @@ export default function SuggestionsCard({ className, data, commentsCount, tags }
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ feedbackId: data.id, tagId: id })
             })
+            tagState && setTagState([...tagState.filter(tag => tag.id != id)]);
         } catch (error) {
             console.error(`Failed to delete tag with id: ${id}`);
-            setLoading(false);
         }
+        setLoading(false);
     }
 
 
@@ -72,7 +73,7 @@ export default function SuggestionsCard({ className, data, commentsCount, tags }
     return <Link href={`/feedback/view?id=${feedbackData?.id}`}>
         <div onDrop={handleDrop} onDragOver={handleDragOver} className={`${className} bg-white grid grid-cols-10 rounded-lg p-5 md:gap-8 hover:cursor-pointer relative`}>
             <div className="col-span-1 hidden md:block">
-                <Upvote feedbackId={feedbackData?.id} initialVotes={feedbackData?.votes} />
+                {feedbackData && <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />}
             </div>
             <div className="col-span-10 md:col-span-8 flex flex-col flex-shrink-0" onClick={() => console.log('div clicked')}>
                 <h3 className="text-east-bay-900 mb-1">{feedbackData?.title}</h3>
@@ -81,7 +82,7 @@ export default function SuggestionsCard({ className, data, commentsCount, tags }
                     {tagState?.map((tag, index) => <TagComponent handleDelete={handleTagDelete} id={tag.id} name={tag.name} key={index} />)}
                 </div>
                 <div className="flex justify-between grow-1 md:hidden">
-                    <Upvote feedbackId={feedbackData?.id} initialVotes={feedbackData?.votes} />
+                    {feedbackData && <Upvote feedbackId={feedbackData.id} initialVotes={feedbackData.votes} />}
                     <CommentsNumber count={commentsCount} />
                 </div>
             </div>
