@@ -3,5 +3,13 @@
         "activityBar.background": "#531B15",
         "titleBar.activeBackground": "#74251E",
         "titleBar.activeForeground": "#FDF8F8"
+    },
+    "tailwindCSS.includeLanguages": {
+        "html": "html",
+        "javascript": "javascript",
+        "css": "css"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
     }
 }
