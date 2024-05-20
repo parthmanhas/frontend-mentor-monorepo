@@ -9,9 +9,10 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { Badge } from "./ui/badge"
+import { Tag } from "@prisma/client";
+import { Badge } from "./ui/badge";
 
-export function FeedbackNavigationMenu() {
+export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
     return (
         <NavigationMenu>
             <NavigationMenuList>
@@ -19,12 +20,7 @@ export function FeedbackNavigationMenu() {
                     <NavigationMenuTrigger>Tags</NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <div className="w-[300px] flex gap-3 p-3 items-start justify-start flex-wrap">
-                            <Badge>All</Badge>
-                            <Badge>UI</Badge>
-                            <Badge>UX</Badge>
-                            <Badge>Enhancement</Badge>
-                            <Badge>Bug</Badge>
-                            <Badge>Feature</Badge>
+                            {tags.map((tag, index) => <Badge key={index}>{tag.name}</Badge>)}
                         </div>
                     </NavigationMenuContent>
                 </NavigationMenuItem>

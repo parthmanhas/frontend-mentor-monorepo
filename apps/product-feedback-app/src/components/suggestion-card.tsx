@@ -1,18 +1,25 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-export default function SuggestionCard() {
+import { FeedbackWithTags } from '@/lib/types';
+import { Tag } from '@prisma/client';
+
+type SuggestionCardProps = {
+    feedback: FeedbackWithTags
+}
+
+export default function SuggestionCard({ feedback }: SuggestionCardProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Add tags for solution</CardTitle>
-                <CardDescription>Easier to search for solution based on a specific task</CardDescription>
+                <CardTitle>{feedback.heading}</CardTitle>
+                <CardDescription>{feedback.content}</CardDescription>
             </CardHeader>
-            <CardContent>
-                <Badge variant="secondary">Enhancement</Badge>
+            <CardContent className="space-x-2">
+                {feedback.tags.map((tag: Tag) => <Badge variant="secondary">{tag.name}</Badge>)}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button variant="outline">Upvotes 112</Button>
+                <Button variant="outline">Upvotes {feedback.upvotes}</Button>
                 <Button variant="outline">Comments 2</Button>
             </CardFooter>
         </Card>
