@@ -7,11 +7,12 @@ import db from "@/lib/db";
 import { FeedbackWithTags } from "@/lib/types";
 import EmptyFeedback from "@/components/empty-feedback";
 import Link from "next/link";
+import PageContent from "@/components/page-content";
 
 async function getFeedbacks() {
   const result = await db.feedback.findMany({
     where: {
-      userEmail: 'Dawson35@hotmail.com'
+      userEmail: 'Bret_Pacocha@gmail.com'
     },
     include: {
       tags: true
@@ -33,14 +34,16 @@ export default async function Home() {
   const allTags = await getAllTags();
 
   return (
-    <main className="flex flex-col min-h-screen justify-between max-w-[1280px] mx-auto">
+    <PageContent className="min-h-screen justify-between">
       <nav className="flex items-center w-full justify-between p-8 bg-black/5 h-[100px]">
         <h1>Feedback Board</h1>
         <FeedbackNavigationMenu tags={allTags} />
         <div>
           <p className="font-bold text-xl">{feedbacks.length} Suggestions</p>
         </div>
-        <Button>Add Feedback</Button>
+        <Link href="/create">
+          <Button>Add Feedback</Button>
+        </Link>
       </nav>
       <Content className="flex flex-1">
         {feedbacks.length > 0 &&
@@ -54,6 +57,6 @@ export default async function Home() {
         }
         {feedbacks.length === 0 && <EmptyFeedback />}
       </Content>
-    </main>
+    </PageContent>
   );
 }
