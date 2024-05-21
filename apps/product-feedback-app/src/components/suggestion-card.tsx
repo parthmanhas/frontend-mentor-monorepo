@@ -5,12 +5,13 @@ import { FeedbackWithTags } from '@/lib/types';
 import { Tag } from '@prisma/client';
 
 type SuggestionCardProps = {
-    feedback: FeedbackWithTags
+    feedback: FeedbackWithTags,
+    className?: string
 }
 
-export default function SuggestionCard({ feedback }: SuggestionCardProps) {
+export default function SuggestionCard({ feedback, className }: SuggestionCardProps) {
     return (
-        <Card>
+        <Card className={className}>
             <CardHeader>
                 <CardTitle>{feedback.heading}</CardTitle>
                 <CardDescription>{feedback.content}</CardDescription>

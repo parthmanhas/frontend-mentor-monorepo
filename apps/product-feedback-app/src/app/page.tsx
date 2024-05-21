@@ -6,6 +6,7 @@ import { FeedbackNavigationMenu } from '@/components/navigation-menu';
 import db from "@/lib/db";
 import { FeedbackWithTags } from "@/lib/types";
 import EmptyFeedback from "@/components/empty-feedback";
+import Link from "next/link";
 
 async function getFeedbacks() {
   const result = await db.feedback.findMany({
@@ -27,8 +28,8 @@ async function getAllTags() {
 
 export default async function Home() {
 
-  // const feedbacks = await getFeedbacks();
-  const feedbacks = [];
+  const feedbacks = await getFeedbacks();
+  // const feedbacks = []
   const allTags = await getAllTags();
 
   return (
@@ -41,11 +42,13 @@ export default async function Home() {
         </div>
         <Button>Add Feedback</Button>
       </nav>
-      <Content className="flex-1 flex">
+      <Content className="flex flex-1">
         {feedbacks.length > 0 &&
-          <div className="w-full mt-5 space-y-4 pb-5">
+          <div className="w-full flex flex-col mt-5 gap-4 pb-5">
             {feedbacks?.map((feedback, index) => (
-              <SuggestionCard key={index} feedback={feedback} />
+              <Link href={`/${feedback.id}`}>
+                <SuggestionCard key={index} feedback={feedback} />
+              </Link>
             ))}
           </div>
         }
