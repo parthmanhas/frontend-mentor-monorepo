@@ -7,10 +7,9 @@ export default function SuggestionCardUpvoteButton({ feedbackId, upvotes, update
     const [upvoteCount, setUpvoteCount] = useState(upvotes);
     const [loading, setLoading] = useState(false);
 
-    const handleUpvote = async (e) => {
+    const handleUpvote = async (e: any) => {
         e.preventDefault();
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000))
         const updatedVotes = await updateUpvote(feedbackId);
         if (!updatedVotes) {
             console.error('Error updating upvotes');

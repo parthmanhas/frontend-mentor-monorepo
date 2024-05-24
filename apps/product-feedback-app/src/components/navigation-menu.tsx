@@ -11,8 +11,27 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Tag } from "@prisma/client";
 import { Badge } from "./ui/badge";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
+    const [selectedTag, setSelectedTag] = useState<string[]>([]);
+
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const handleTagSelect = (tag: { id: string, name: string }) => {
+        let tags;
+        if (selectedTag.includes(tag.name)) {
+            tags = [...selectedTag.filter(t => t != tag.name)];
+        } else {
+            tags = [...selectedTag, tag.name];
+        }
+        setSelectedTag(tags);
+        const queryParams = tags.join('&tag=');
+        router.push(`?tag=${queryParams}`);
+
+    }
     return (
         <NavigationMenu>
             <NavigationMenuList>
@@ -20,7 +39,7 @@ export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
                     <NavigationMenuTrigger>Tags</NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <div className="w-[300px] flex gap-3 p-3 items-start justify-start flex-wrap">
-                            {tags.map((tag, index) => <Badge key={index}>{tag.name}</Badge>)}
+                            {tags.map((tag, index) => <Badge className="hover:cursor-pointer" variant={selectedTag.includes(tag.name) ? 'default' : 'outline'} onClick={() => handleTagSelect(tag)} key={index}>{tag.name}</Badge>)}
                         </div>
                     </NavigationMenuContent>
                 </NavigationMenuItem>

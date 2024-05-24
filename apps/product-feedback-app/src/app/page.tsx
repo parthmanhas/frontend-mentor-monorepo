@@ -9,7 +9,7 @@ import EmptyFeedback from "@/components/empty-feedback";
 import Link from "next/link";
 import PageContent from "@/components/page-content";
 
-async function getFeedbacks() {
+async function getAllFeedbacks() {
   const result = await db.feedback.findMany({
     where: {
       userEmail: 'Bret_Pacocha@gmail.com'
@@ -26,12 +26,40 @@ async function getAllTags() {
   return tags;
 }
 
+async function getFeedbacksFilterTags(filterTags: string[]) {
 
-export default async function Home() {
+  if (filterTags.length === 0 || !filterTags) {
+    return await getAllFeedbacks();
+  }
 
-  const feedbacks = await getFeedbacks();
-  // const feedbacks = []
+  const result = await db.feedback.findMany({
+    where: {
+      tags: {
+        some: {
+          name: {
+            in: filterTags
+          }
+        }
+      }
+    },
+    include: {
+      tags: true
+    }
+  })
+  return result as FeedbackWithTags[];
+}
+
+
+export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
+
+  let tags = searchParams?.["tag"] || [];
+  if (typeof tags === 'string') {
+    tags = [tags];
+  }
+
+  let feedbacks = await getFeedbacksFilterTags(tags);
   const allTags = await getAllTags();
+
 
   return (
     <PageContent className="min-h-screen justify-between">
