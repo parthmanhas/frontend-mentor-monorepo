@@ -12,24 +12,27 @@ import {
 import { Tag } from "@prisma/client";
 import { Badge } from "./ui/badge";
 import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
     const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
     const router = useRouter();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const handleTagSelect = (tag: { id: string, name: string }) => {
         let tags;
+        const params = new URLSearchParams(searchParams.toString())
         if (selectedTag.includes(tag.name)) {
             tags = [...selectedTag.filter(t => t != tag.name)];
+            params.delete("tag", tag.name);
         } else {
             tags = [...selectedTag, tag.name];
+            params.append("tag", tag.name);
         }
         setSelectedTag(tags);
-        const queryParams = tags.join('&tag=');
-        router.push(`?tag=${queryParams}`);
+        router.push(`${pathname}?${params.toString()}`);
 
     }
     return (

@@ -1,6 +1,25 @@
-export const SORT_OPTIONS = {
-    MOST_UPVOTES: "Most Upvotes",
-    LEAST_UPVOTES: "Least Upvotes",
-    MOST_COMMENTS: "Most Comments",
-    LEAST_COMMENTS: "Least Comments",
-}
+export const SORT_OPTIONS: { name: string, field: string, order: 'asc' | 'desc' }[] = [
+    {
+        name: "Most Upvotes",
+        field: "upvotes",
+        order: "desc"
+    },
+    {
+        name: "Least Upvotes",
+        field: "upvotes",
+        order: "asc"
+    },
+    {
+        name: "Most Comments",
+        field: "comments",
+        order: "asc"
+    },
+    {
+        name: "Least Comments",
+        field: "comments",
+        order: "desc"
+    },
+]
+
+// TODO: remove this hardcode
+export const USER_EMAIL = 'Lou_Ortiz17@hotmail.com';

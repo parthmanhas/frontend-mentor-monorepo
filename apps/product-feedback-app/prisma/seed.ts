@@ -88,8 +88,13 @@ async function main() {
                         upvotes: feedback.upvotes,
                         status: feedback.status as Status,
                         category: {
-                            create: {
-                                name: feedback.category.name
+                            connectOrCreate: {
+                                where: {
+                                    name: feedback.category.name
+                                },
+                                create: {
+                                    name: feedback.category.name
+                                }
                             }
                         },
                         tags: {

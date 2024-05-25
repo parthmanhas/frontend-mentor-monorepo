@@ -8,28 +8,30 @@ import { FeedbackWithTags } from "@/lib/types";
 import EmptyFeedback from "@/components/empty-feedback";
 import Link from "next/link";
 import PageContent from "@/components/page-content";
-
-async function getAllFeedbacks() {
-  const result = await db.feedback.findMany({
-    where: {
-      userEmail: 'Bret_Pacocha@gmail.com'
-    },
-    include: {
-      tags: true
-    }
-  })
-  return result as FeedbackWithTags[];
-}
+import { USER_EMAIL } from "@/lib/constants";
 
 async function getAllTags() {
   const tags = await db.tag.findMany();
   return tags;
 }
 
-async function getFeedbacksFilterTags(filterTags: string[]) {
+async function getFeedbacks(filterTags: string[] | null, sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
 
-  if (filterTags.length === 0 || !filterTags) {
-    return await getAllFeedbacks();
+  if (!filterTags || filterTags.length === 0) {
+    const result = await db.feedback.findMany({
+      where: {
+        userEmail: USER_EMAIL
+      },
+      include: {
+        tags: true
+      },
+      ...(sortOption && {
+        orderBy: {
+          [sortOption.sort]: sortOption.order
+        }
+      })
+    })
+    return result as FeedbackWithTags[];
   }
 
   const result = await db.feedback.findMany({
@@ -44,7 +46,12 @@ async function getFeedbacksFilterTags(filterTags: string[]) {
     },
     include: {
       tags: true
-    }
+    },
+    ...(sortOption && {
+      orderBy: {
+        [sortOption.sort]: sortOption.order
+      }
+    })
   })
   return result as FeedbackWithTags[];
 }
@@ -52,12 +59,15 @@ async function getFeedbacksFilterTags(filterTags: string[]) {
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
 
-  let tags = searchParams?.["tag"] || [];
-  if (typeof tags === 'string') {
-    tags = [tags];
+  let tags = null;
+  if (searchParams["tag"]) {
+    tags = Array.isArray(searchParams["tag"]) ? searchParams["tag"] : [searchParams["tag"]];
   }
 
-  let feedbacks = await getFeedbacksFilterTags(tags);
+  const { sort, order } = searchParams;
+  let sortOption = { sort, order } as { sort: string, order: "asc" | "desc" };
+
+  let feedbacks = await getFeedbacks(tags, sortOption);
   const allTags = await getAllTags();
 
 

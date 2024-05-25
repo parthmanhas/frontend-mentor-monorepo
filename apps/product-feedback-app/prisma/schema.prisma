@@ -20,24 +20,23 @@ enum Status {
 }
 
 model Category {
-  id       String     @id @default(uuid())
-  name     String
+  name     String     @unique
   Feedback Feedback[]
 }
 
 model Feedback {
-  id         String   @id @default(uuid())
-  heading    String
-  content    String
-  tags       Tag[]
-  upvotes    Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  author     User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
-  userEmail  String
-  status     Status
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String
+  id           String   @id @default(uuid())
+  heading      String
+  content      String
+  tags         Tag[]
+  upvotes      Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  author       User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail    String
+  status       Status
+  category     Category @relation(fields: [categoryName], references: [name])
+  categoryName String
 }
 
 model User {
