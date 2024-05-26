@@ -4,7 +4,6 @@ import PageContent from "@/components/page-content";
 import SuggestionCard from "@/components/suggestion-card";
 import { Button } from "@/components/ui/button";
 import { getFeedbackWithComments } from "@/lib/server";
-import { FeedbackWithComments } from "@/lib/types";
 import Link from "next/link";
 
 type FeedbackPageProps = {
@@ -46,7 +45,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
             </div>
             <SuggestionCard feedback={{ ...feedback, tags: [] }} />
             <Comments comments={feedback.comments} />
-            <AddComment className="mt-auto" />
+            {/* TODO: change the userEmail to global variable, do this when implementing authentication */}
+            <AddComment userEmail="getUserNameFromContext@goog.com" feedbackId={feedback.id} className="mt-auto" />
         </PageContent>
     )
 }

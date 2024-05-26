@@ -218,3 +218,52 @@ export async function getAllUser() {
         console.error('Error getting users');
     }
 }
+
+export async function postComment(form: FormData) {
+    const postCommentSchema = z.object({
+        feedbackId: z.string().optional(),
+        parentCommentId: z.string().optional(),
+        content: z.string(),
+        userEmail: z.string().email()
+    }).refine(data => {
+        const hasFeedbackId = data.feedbackId !== undefined;
+        const hasParentCommentId = data.parentCommentId !== undefined;
+
+        // Either feedbackId or parentCommentId should be present (but not both)
+        return (hasFeedbackId && !hasParentCommentId) || (!hasFeedbackId && hasParentCommentId);
+    }, {
+        message: 'Either feedbackId or parentCommentId should be present (but not both)',
+    });
+    const parsed = postCommentSchema.safeParse(Object.fromEntries(form));
+
+    if (!parsed.success) {
+        console.error(parsed.error);
+        return {
+            success: false,
+            message: 'Error adding comment'
+        }
+    }
+
+    // if comment is a child of feedback
+    if (parsed.data.feedbackId) {
+        const { feedbackId, content, userEmail } = parsed.data;
+        await db.feedback.update({
+            where: { id: feedbackId },
+            data: {
+                comments: {
+                    create: {
+                        content,
+                        userEmail
+                    }
+                }
+            }
+        })
+        revalidatePath(`/${feedbackId}`);
+        return {
+            success: true,
+            message: 'Added comment successfully'
+        }
+    }
+
+    // if comment is a child of another comment
+}
