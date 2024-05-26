@@ -1,14 +1,8 @@
 import CreateFeedbackForm from "@/components/create-feedback-form";
 import PageContent from "@/components/page-content";
 import { Button } from "@/components/ui/button";
-import db from "@/lib/db";
+import { getAllCategory } from "@/lib/server";
 import Link from "next/link";
-
-async function getAllCategory() {
-    const result = await db.category.findMany();
-    return result;
-}
-
 
 export default async function CreateFeedbackPage() {
 

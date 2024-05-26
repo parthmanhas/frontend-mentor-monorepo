@@ -3,59 +3,10 @@ import SuggestionCard from "@/components/suggestion-card";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { FeedbackNavigationMenu } from '@/components/navigation-menu';
-import db from "@/lib/db";
-import { FeedbackWithTags } from "@/lib/types";
 import EmptyFeedback from "@/components/empty-feedback";
 import Link from "next/link";
 import PageContent from "@/components/page-content";
-import { USER_EMAIL } from "@/lib/constants";
-
-async function getAllTags() {
-  const tags = await db.tag.findMany();
-  return tags;
-}
-
-async function getFeedbacks(filterTags: string[] | null, sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
-
-  if (!filterTags || filterTags.length === 0) {
-    const result = await db.feedback.findMany({
-      where: {
-        userEmail: USER_EMAIL
-      },
-      include: {
-        tags: true
-      },
-      ...(sortOption && {
-        orderBy: {
-          [sortOption.sort]: sortOption.order
-        }
-      })
-    })
-    return result as FeedbackWithTags[];
-  }
-
-  const result = await db.feedback.findMany({
-    where: {
-      tags: {
-        some: {
-          name: {
-            in: filterTags
-          }
-        }
-      }
-    },
-    include: {
-      tags: true
-    },
-    ...(sortOption && {
-      orderBy: {
-        [sortOption.sort]: sortOption.order
-      }
-    })
-  })
-  return result as FeedbackWithTags[];
-}
-
+import { getAllTags, getFeedbacks } from "@/lib/server";
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
 
