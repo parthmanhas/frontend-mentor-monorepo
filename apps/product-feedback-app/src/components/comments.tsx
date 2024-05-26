@@ -1,6 +1,7 @@
 import Comment from "./comment";
+import { Comment as IComment } from '@prisma/client';
 
-export default function Comments() {
+export default function Comments({ comments }: { comments: IComment[] }) {
 
     const comment = {
         email: 'email',
@@ -20,7 +21,7 @@ export default function Comments() {
         ]
     }
 
-    const comments = [commentWithChildren, comment, comment, comment, comment]
+    // const comments = [commentWithChildren, comment, comment, comment, comment]
 
     return (
         <div className="my-5 border-[1px] rounded border-black/10 p-5">

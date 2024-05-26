@@ -19,31 +19,47 @@ enum Status {
   LIVE
 }
 
+model Comment {
+  id               String    @id @default(uuid())
+  content          String
+  updatedAt        DateTime  @updatedAt
+  createdAt        DateTime  @default(now())
+  author           User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail        String
+  children         Comment[] @relation("ParentChild")
+  parentComment    Comment?  @relation("ParentChild", fields: [parentCommentId], references: [id])
+  parentCommentId  String?
+  feedback         Feedback? @relation(fields: [parentFeedbackId], references: [id])
+  parentFeedbackId String?
+}
+
 model Category {
   name     String     @unique
   Feedback Feedback[]
 }
 
 model Feedback {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   heading      String
   content      String
   tags         Tag[]
   upvotes      Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  author       User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  author       User      @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   userEmail    String
   status       Status
-  category     Category @relation(fields: [categoryName], references: [name])
+  category     Category  @relation(fields: [categoryName], references: [name])
   categoryName String
+  comments     Comment[]
 }
 
 model User {
-  email     String     @unique
-  username  String     @id
+  email     String     @id @unique
+  username  String
   name      String     @unique
   feedbacks Feedback[]
+  comments  Comment[]
 }
 
 model Tag {

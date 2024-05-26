@@ -4,17 +4,21 @@ import db from '@/lib/db';
 import { Status } from '@prisma/client';
 import { z } from 'zod';
 import { USER_EMAIL } from '@/lib/constants';
-import { FeedbackWithTags } from '@/lib/types';
+import { FeedbackWithComments, FeedbackWithTagsAndCommentsCountResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
-export async function getFeedback(id: string) {
+export async function getFeedbackWithComments(id: string) {
     const feedback = await db.feedback.findUnique({
         where: { id },
         include: {
-            tags: true
+            comments: {
+                include: {
+                    children: true
+                }
+            }
         }
     })
-    return feedback;
+    return feedback as FeedbackWithComments;
 }
 
 export async function getFeedbackWithoutTags(id: string) {
@@ -76,15 +80,32 @@ export async function getAllTags() {
     return tags;
 }
 
-export async function getFeedbacks(filterTags: string[] | null, sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
-
+export async function getFeedbacks(userEmail: string, filterTags: string[] | null, sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
+    if (!userEmail) {
+        console.error('userEmail not found');
+        return;
+    }
     if (!filterTags || filterTags.length === 0) {
         const result = await db.feedback.findMany({
             where: {
-                userEmail: USER_EMAIL
+                userEmail
             },
             include: {
-                tags: true
+                tags: true,
+                _count: {
+                    select: {
+                        comments: true
+                    },
+                },
+                comments: {
+                    select: {
+                        _count: {
+                            select: {
+                                children: true
+                            }
+                        }
+                    }
+                }
             },
             ...(sortOption && {
                 orderBy: {
@@ -93,7 +114,7 @@ export async function getFeedbacks(filterTags: string[] | null, sortOption: { so
             })
         })
         revalidatePath('/');
-        return result as FeedbackWithTags[];
+        return result as FeedbackWithTagsAndCommentsCountResponse[];
     }
 
     const result = await db.feedback.findMany({
@@ -115,7 +136,7 @@ export async function getFeedbacks(filterTags: string[] | null, sortOption: { so
             }
         })
     })
-    return result as FeedbackWithTags[];
+    return result as FeedbackWithTagsAndCommentsCountResponse[];
 }
 
 export async function getAllCategory() {
@@ -186,5 +207,14 @@ export async function updateUpvote(feedbackId: string) {
         return response.upvotes;
     } catch (e) {
         console.error('Could not update feedback count', e);
+    }
+}
+
+export async function getAllUser() {
+    try {
+        const result = await db.user.findMany();
+        return result;
+    } catch (e) {
+        console.error('Error getting users');
     }
 }

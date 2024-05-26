@@ -3,7 +3,8 @@ import Comments from "@/components/comments";
 import PageContent from "@/components/page-content";
 import SuggestionCard from "@/components/suggestion-card";
 import { Button } from "@/components/ui/button";
-import { getFeedback } from "@/lib/server";
+import { getFeedbackWithComments } from "@/lib/server";
+import { FeedbackWithComments } from "@/lib/types";
 import Link from "next/link";
 
 type FeedbackPageProps = {
@@ -17,7 +18,18 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
     if (!id) {
         throw new Error('Feedback id not present in url!');
     }
-    const feedback = await getFeedback(id);
+
+    const getTotalComments = (comments) => {
+        if (!comments || comments.length == 0) return 0;
+        let totalComments = comments.length;
+        for (const comment of comments) {
+            totalComments += getTotalComments(comment.children);
+        }
+        return totalComments;
+    }
+    const feedbackResponse = await getFeedbackWithComments(id);
+    const feedback = { ...feedbackResponse, totalComments: getTotalComments(feedbackResponse.comments) };
+
     if (!feedback) {
         console.error('No feedback with present');
         return;
@@ -25,15 +37,15 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
     return (
         <PageContent className="py-5">
             <div className="w-full flex justify-between mb-5">
-                <Link href="/">
+                <Link href="/home">
                     <Button>Go back</Button>
                 </Link>
                 <Link href={`/edit/${id}`}>
                     <Button>Edit Feedback</Button>
                 </Link>
             </div>
-            <SuggestionCard feedback={feedback} />
-            <Comments />
+            <SuggestionCard feedback={{ ...feedback, tags: [] }} />
+            <Comments comments={feedback.comments} />
             <AddComment className="mt-auto" />
         </PageContent>
     )

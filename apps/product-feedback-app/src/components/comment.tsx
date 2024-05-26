@@ -7,13 +7,13 @@ import { Button } from "./ui/button";
 
 type CommentProps = {
     className?: string,
-    email: string,
-    username: string,
+    userEmail: string,
+    username?: string,
     content: string,
-    childComments?: CommentProps[]
+    children?: CommentProps[]
 }
 
-export default function Comment({ className, email, username, content, childComments }: CommentProps) {
+export default function Comment({ className, userEmail, username, content, children }: CommentProps) {
 
     const [replying, setReplying] = useState(false);
 
@@ -25,10 +25,10 @@ export default function Comment({ className, email, username, content, childComm
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <div>
+                    <div className="w-full">
                         <div className="flex justify-between mb-5">
                             <div>
-                                <p className="font-bold">{email}</p>
+                                <p className="font-bold">{userEmail}</p>
                                 <p className="text-black/50">{username}</p>
                             </div>
                             <Button onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
@@ -38,7 +38,7 @@ export default function Comment({ className, email, username, content, childComm
                     </div>
                 </div>
                 <div className="ml-8 border-l-[1px]">
-                    {childComments?.map((childComment, index) => <Comment key={index} {...childComment} />)}
+                    {children?.map((childComment, index) => <Comment key={index} {...childComment} />)}
                 </div>
             </div>
 
