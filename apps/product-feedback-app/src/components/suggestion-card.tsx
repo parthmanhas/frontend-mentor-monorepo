@@ -4,32 +4,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { FeedbackWithTags } from '@/lib/types';
 import { Tag } from '@prisma/client';
 import SuggestionCardUpvoteButton from './suggestion-card-upvote-button';
-import db from '@/lib/db';
+import { updateUpvote } from '@/lib/server';
 
 type SuggestionCardProps = {
     feedback: FeedbackWithTags,
     className?: string
-}
-
-
-export async function updateUpvote(feedbackId: string) {
-    "use server";
-    if (!feedbackId) {
-        console.error('feedbackId undefined');
-    }
-    try {
-        const response = await db.feedback.update({
-            where: { id: feedbackId },
-            data: {
-                upvotes: {
-                    increment: 1
-                }
-            }
-        })
-        return response.upvotes;
-    } catch (e) {
-        console.error('Could not update feedback count', e);
-    }
 }
 
 export default function SuggestionCard({ feedback, className }: SuggestionCardProps) {

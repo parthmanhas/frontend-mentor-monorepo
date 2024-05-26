@@ -2,10 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 export default function SuggestionCardUpvoteButton({ feedbackId, upvotes, updateUpvote }: { feedbackId: string, upvotes: number, updateUpvote: Function }) {
     const [upvoteCount, setUpvoteCount] = useState(upvotes);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setUpvoteCount(upvotes);
+    }, [upvotes]);
 
     const handleUpvote = async (e: any) => {
         e.preventDefault();
@@ -16,9 +20,8 @@ export default function SuggestionCardUpvoteButton({ feedbackId, upvotes, update
             setLoading(false);
             return;
         }
-
-        setUpvoteCount(updatedVotes);
         setLoading(false);
+        setUpvoteCount(updatedVotes);
     }
 
     return (

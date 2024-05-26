@@ -92,6 +92,7 @@ export async function getFeedbacks(filterTags: string[] | null, sortOption: { so
                 }
             })
         })
+        revalidatePath('/');
         return result as FeedbackWithTags[];
     }
 
@@ -166,5 +167,24 @@ export async function updateFeedback(form: FormData) {
             success: false,
             message: 'Error updating feedback'
         }
+    }
+}
+
+export async function updateUpvote(feedbackId: string) {
+    if (!feedbackId) {
+        console.error('feedbackId undefined');
+    }
+    try {
+        const response = await db.feedback.update({
+            where: { id: feedbackId },
+            data: {
+                upvotes: {
+                    increment: 1
+                }
+            }
+        })
+        return response.upvotes;
+    } catch (e) {
+        console.error('Could not update feedback count', e);
     }
 }

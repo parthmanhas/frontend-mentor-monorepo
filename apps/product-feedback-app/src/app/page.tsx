@@ -21,7 +21,6 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
   let feedbacks = await getFeedbacks(tags, sortOption);
   const allTags = await getAllTags();
 
-
   return (
     <PageContent className="min-h-screen justify-between">
       <nav className="flex items-center w-full justify-between p-8 bg-black/5 h-[100px]">
