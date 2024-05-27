@@ -13,10 +13,13 @@ export async function getFeedbackWithComments(id: string) {
         include: {
             comments: {
                 include: {
-                    children: true
+                    children: true,
+                },
+                orderBy: {
+                    updatedAt: 'desc'
                 }
-            }
-        }
+            },
+        },
     })
     return feedback as FeedbackWithComments;
 }
@@ -30,9 +33,6 @@ export async function getFeedbackWithoutTags(id: string) {
 
 export async function createFeedback(form: FormData) {
     const formData = Object.fromEntries(form);
-    // default status will always be PLANNED
-    formData.status = "PLANNED";
-    formData.userEmail = USER_EMAIL;
 
     const createFeedbackSchema = z.object({
         heading: z.string(),
@@ -221,19 +221,12 @@ export async function getAllUser() {
 
 export async function postComment(form: FormData) {
     const postCommentSchema = z.object({
-        feedbackId: z.string().optional(),
+        feedbackId: z.string(),
         parentCommentId: z.string().optional(),
         content: z.string(),
         userEmail: z.string().email()
-    }).refine(data => {
-        const hasFeedbackId = data.feedbackId !== undefined;
-        const hasParentCommentId = data.parentCommentId !== undefined;
+    })
 
-        // Either feedbackId or parentCommentId should be present (but not both)
-        return (hasFeedbackId && !hasParentCommentId) || (!hasFeedbackId && hasParentCommentId);
-    }, {
-        message: 'Either feedbackId or parentCommentId should be present (but not both)',
-    });
     const parsed = postCommentSchema.safeParse(Object.fromEntries(form));
 
     if (!parsed.success) {
@@ -244,26 +237,74 @@ export async function postComment(form: FormData) {
         }
     }
 
-    // if comment is a child of feedback
-    if (parsed.data.feedbackId) {
+    // if comment is a child of feedback, adding comment
+    if (parsed.data.feedbackId && !parsed.data.parentCommentId) {
         const { feedbackId, content, userEmail } = parsed.data;
-        await db.feedback.update({
-            where: { id: feedbackId },
-            data: {
-                comments: {
-                    create: {
-                        content,
-                        userEmail
-                    }
+        try {
+            await db.comment.create({
+                data: {
+                    content,
+                    userEmail,
+                    parentFeedbackId: feedbackId
                 }
+            })
+            revalidatePath(`/${feedbackId}`);
+            return {
+                success: true,
+                message: 'Added comment successfully'
             }
-        })
-        revalidatePath(`/${feedbackId}`);
-        return {
-            success: true,
-            message: 'Added comment successfully'
+        } catch (e) {
+            console.error(`Error postComment: ${e}`);
+            return {
+                success: false,
+                message: 'Error adding comment'
+            }
         }
     }
 
-    // if comment is a child of another comment
+    // if comment is a child of another comment, posting reply
+    if (parsed.data.parentCommentId) {
+        const { feedbackId, parentCommentId, content, userEmail } = parsed.data;
+        try {
+            await db.comment.create({
+                data: {
+                    content,
+                    userEmail,
+                    parentCommentId,
+                    parentFeedbackId: feedbackId
+                }
+            })
+            revalidatePath(`/${feedbackId}`);
+            return {
+                success: true,
+                message: 'Posted reply successfully'
+            }
+        } catch (e) {
+            console.error(e);
+            return {
+                success: false,
+                message: 'Error posting reply'
+            }
+        }
+    }
+
+    console.error('parentCommentId is missing');
+    return {
+        success: false,
+        message: 'Error posting reply'
+    }
+}
+
+export async function getComments(feedbackId: string) {
+    try {
+        const results = await db.comment.findMany({
+            where: { parentFeedbackId: feedbackId },
+            orderBy: {
+                updatedAt: 'desc'
+            }
+        });
+        return results;
+    } catch (e) {
+        console.error(`Error getting comments with feedback id : ${feedbackId}`, e);
+    }
 }

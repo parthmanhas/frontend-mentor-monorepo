@@ -3,14 +3,15 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient()
 
-function generateChildrenComments(parentCommentId: string, count: number, users: any[]) {
+function generateChildrenComments(parentCommentId: string, count: number, users: any[], parentFeedbackId: string) {
     let childrenComments = [];
     for (let i = 0; i < count; i++) {
         const childComment = {
             id: faker.string.uuid(),
             content: faker.lorem.sentence(),
             userEmail: users[Math.floor(Math.random() * users.length)].email,
-            parentCommentId
+            parentCommentId,
+            parentFeedbackId
         }
         childrenComments.push(childComment);
     }
@@ -27,7 +28,7 @@ function generateComments(count: number, feedbackId: string, users: any[]) {
             content: faker.lorem.sentence(),
             userEmail: user.email,
             parentFeedbackId: feedbackId,
-            children: generateChildrenComments(id, Math.floor(Math.random() * 10), users)
+            children: generateChildrenComments(id, Math.floor(Math.random() * 10), users, feedbackId)
         }
         if (comment.userEmail)
             comments.push(comment);
@@ -237,6 +238,11 @@ async function main() {
                     await prisma.comment.create({
                         data: {
                             content: childComment.content,
+                            feedback: {
+                                connect: {
+                                    id: childComment.parentFeedbackId
+                                }
+                            },
                             author: {
                                 connect: { email: childComment.userEmail }
                             },

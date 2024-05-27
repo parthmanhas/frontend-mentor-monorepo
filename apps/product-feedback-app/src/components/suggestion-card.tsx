@@ -20,7 +20,7 @@ export default function SuggestionCard({ feedback, className, displayTags = fals
                 <CardDescription>{feedback.content}</CardDescription>
             </CardHeader>
             {displayTags && <CardContent className="space-x-2">
-                {feedback.tags.map((tag: Tag) => <Badge variant="secondary">{tag.name}</Badge>)}
+                {feedback.tags.map((tag: Tag, index) => <Badge key={index} variant="secondary">{tag.name}</Badge>)}
             </CardContent>}
             <CardFooter className="flex justify-between">
                 <SuggestionCardUpvoteButton feedbackId={feedback.id} updateUpvote={updateUpvote} upvotes={feedback.upvotes} />

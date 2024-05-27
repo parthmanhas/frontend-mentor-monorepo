@@ -25,7 +25,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     return;
   }
 
-  let feedbacksReponse= await getFeedbacks(userEmail, tags, sortOption);
+  let feedbacksReponse = await getFeedbacks(userEmail, tags, sortOption);
   const feedbacks = feedbacksReponse?.map(feedback => {
     let totalComments = feedback._count.comments;
     for (const childrenCount of feedback.comments) {
@@ -54,8 +54,8 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         {feedbacks.length > 0 &&
           <div className="w-full flex flex-col mt-5 gap-4 pb-5">
             {feedbacks?.map((feedback, index) => (
-              <Link href={`/${feedback.id}`}>
-                <SuggestionCard displayTags={true} key={index} feedback={feedback} />
+              <Link key={index} href={`/${feedback.id}`}>
+                <SuggestionCard displayTags={true} feedback={feedback} />
               </Link>
             ))}
           </div>

@@ -7,13 +7,16 @@ import { Button } from "./ui/button";
 
 type CommentProps = {
     className?: string,
+    id: string,
     userEmail: string,
     username?: string,
     content: string,
-    children?: CommentProps[]
+    children?: CommentProps[],
+    updatedAt: Date,
+    parentFeedbackId: string
 }
 
-export default function Comment({ className, userEmail, username, content, children }: CommentProps) {
+export default function Comment({ className, userEmail, username, content, children, id, updatedAt, parentFeedbackId }: CommentProps) {
 
     const [replying, setReplying] = useState(false);
 
@@ -31,10 +34,13 @@ export default function Comment({ className, userEmail, username, content, child
                                 <p className="font-bold">{userEmail}</p>
                                 <p className="text-black/50">{username}</p>
                             </div>
-                            <Button onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
+                            <div className="flex flex-col h-full justify-between">
+                                <small className="text-black/50">Last Updated At: {updatedAt.toLocaleString()}</small>
+                                <Button className="flex-grow-0" onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
+                            </div>
                         </div>
                         <p className="text-black/70">{content}</p>
-                        {replying && <PostReply />}
+                        {replying && <PostReply setReplying={setReplying} parentCommentId={id} userEmail={userEmail} parentFeedbackId={parentFeedbackId}/>}
                     </div>
                 </div>
                 <div className="ml-8 border-l-[1px]">

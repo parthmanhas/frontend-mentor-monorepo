@@ -19,9 +19,11 @@ export default function LoginForm({ users }: { users: { name: string, email: str
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        {users?.map((user, index) => <Link href={`/home/user=${user.email}`}>
-                            <SelectItem key={index} value={user.email}>{user.email}</SelectItem>
-                        </Link>)}
+                        {users?.map((user, index) =>
+                            <Link key={index} href={`/home/user=${user.email}`}>
+                                <SelectItem value={user.email}>{user.email}</SelectItem>
+                            </Link>
+                        )}
                     </SelectGroup>
                 </SelectContent>
             </Select>

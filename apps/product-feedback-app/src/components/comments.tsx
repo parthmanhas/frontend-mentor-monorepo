@@ -1,7 +1,7 @@
 import Comment from "./comment";
 import { Comment as IComment } from '@prisma/client';
 
-export default function Comments({ comments }: { comments: IComment[] }) {
+export default function Comments({ comments, parentFeedbackId }: { comments: IComment[], parentFeedbackId: string }) {
 
     const comment = {
         email: 'email',
@@ -26,7 +26,7 @@ export default function Comments({ comments }: { comments: IComment[] }) {
     return (
         <div className="my-5 border-[1px] rounded border-black/10 p-5">
             <p className="font-semibold">{comments.length} Comments</p>
-            {comments.map((comment, index) => <Comment className={index !== comments.length - 1 ? `border-b-[1px]` : ''} key={index} {...comment} />)}
+            {comments.map((comment, index) => <Comment className={index !== comments.length - 1 ? `border-b-[1px]` : ''} key={index} {...comment} parentFeedbackId={parentFeedbackId} />)}
         </div>
     )
 }

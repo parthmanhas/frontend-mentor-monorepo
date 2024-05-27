@@ -43,6 +43,9 @@ export default function CreateFeedbackForm({ categories }: { categories: { name:
                             <Textarea id="content" required name="content" />
                         </div>
                     </div>
+                    <input name="status" value="PLANNED" hidden readOnly />
+                    {/* TODO: change when integrating authentication module */}
+                    <input name="userEmail" value="Isaac68@gmail.com" hidden readOnly />
                 </CardContent>
                 <CardFooter className="flex justify-between">
                     <Button variant="outline">Cancel</Button>

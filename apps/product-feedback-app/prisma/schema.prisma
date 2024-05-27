@@ -29,8 +29,8 @@ model Comment {
   children         Comment[] @relation("ParentChild")
   parentComment    Comment?  @relation("ParentChild", fields: [parentCommentId], references: [id])
   parentCommentId  String?
-  feedback         Feedback? @relation(fields: [parentFeedbackId], references: [id])
-  parentFeedbackId String?
+  feedback         Feedback @relation(fields: [parentFeedbackId], references: [id])
+  parentFeedbackId String
 }
 
 model Category {

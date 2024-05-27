@@ -3,7 +3,7 @@ import Comments from "@/components/comments";
 import PageContent from "@/components/page-content";
 import SuggestionCard from "@/components/suggestion-card";
 import { Button } from "@/components/ui/button";
-import { getFeedbackWithComments } from "@/lib/server";
+import { getComments, getFeedbackWithComments } from "@/lib/server";
 import Link from "next/link";
 
 type FeedbackPageProps = {
@@ -18,6 +18,19 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         throw new Error('Feedback id not present in url!');
     }
 
+    const groupComments = (comments, parentId = null) => {
+        const result = [];
+    
+        for (const comment of comments) {
+            if (comment.parentCommentId === parentId) {
+                const children = groupComments(comments, comment.id);
+                result.push({ ...comment, children });
+            }
+        }
+    
+        return result;
+    }
+
     const getTotalComments = (comments) => {
         if (!comments || comments.length == 0) return 0;
         let totalComments = comments.length;
@@ -27,7 +40,9 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         return totalComments;
     }
     const feedbackResponse = await getFeedbackWithComments(id);
-    const feedback = { ...feedbackResponse, totalComments: getTotalComments(feedbackResponse.comments) };
+    let comments = await getComments(id);
+    comments = groupComments(comments);
+    const feedback = { ...feedbackResponse, totalComments: getTotalComments(feedbackResponse.comments), comments };
 
     if (!feedback) {
         console.error('No feedback with present');
@@ -44,7 +59,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
                 </Link>
             </div>
             <SuggestionCard feedback={{ ...feedback, tags: [] }} />
-            <Comments comments={feedback.comments} />
+            <Comments parentFeedbackId={feedback.id} comments={feedback.comments} />
             {/* TODO: change the userEmail to global variable, do this when implementing authentication */}
             <AddComment userEmail="getUserNameFromContext@goog.com" feedbackId={feedback.id} className="mt-auto" />
         </PageContent>
