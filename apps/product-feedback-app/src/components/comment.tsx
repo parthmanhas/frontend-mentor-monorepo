@@ -34,13 +34,13 @@ export default function Comment({ className, userEmail, username, content, child
                                 <p className="font-bold">{userEmail}</p>
                                 <p className="text-black/50">{username}</p>
                             </div>
-                            <div className="flex flex-col h-full justify-between">
+                            <div className="flex flex-col h-full items-center justify-between">
                                 <small className="text-black/50">Last Updated At: {updatedAt.toLocaleString()}</small>
-                                <Button className="flex-grow-0" onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
+                                <Button className="ml-auto" onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
                             </div>
                         </div>
                         <p className="text-black/70">{content}</p>
-                        {replying && <PostReply setReplying={setReplying} parentCommentId={id} userEmail={userEmail} parentFeedbackId={parentFeedbackId}/>}
+                        {replying && <PostReply setReplying={setReplying} parentCommentId={id} userEmail={userEmail} parentFeedbackId={parentFeedbackId} />}
                     </div>
                 </div>
                 <div className="ml-8 border-l-[1px]">
