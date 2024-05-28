@@ -107,9 +107,16 @@ export async function getFeedbacks(userEmail: string, filterTags: string[] | nul
                     }
                 }
             },
-            ...(sortOption && {
+            ...((sortOption?.sort === 'upvotes') && {
                 orderBy: {
                     [sortOption.sort]: sortOption.order
+                }
+            }),
+            ...((sortOption?.sort === 'comments') && {
+                orderBy: {
+                    [sortOption.sort]: {
+                        _count: sortOption.order
+                    }
                 }
             })
         })
@@ -128,11 +135,32 @@ export async function getFeedbacks(userEmail: string, filterTags: string[] | nul
             }
         },
         include: {
-            tags: true
+            tags: true,
+            _count: {
+                select: {
+                    comments: true
+                },
+            },
+            comments: {
+                select: {
+                    _count: {
+                        select: {
+                            children: true
+                        }
+                    }
+                }
+            }
         },
-        ...(sortOption && {
+        ...((sortOption?.sort === 'upvotes') && {
             orderBy: {
                 [sortOption.sort]: sortOption.order
+            }
+        }),
+        ...((sortOption?.sort === 'comments') && {
+            orderBy: {
+                [sortOption.sort]: {
+                    _count: sortOption.order
+                }
             }
         })
     })

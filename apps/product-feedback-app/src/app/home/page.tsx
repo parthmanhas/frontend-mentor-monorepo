@@ -27,7 +27,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 
   let feedbacksReponse = await getFeedbacks(userEmail, tags, sortOption);
   const feedbacks = feedbacksReponse?.map(feedback => {
-    let totalComments = feedback._count.comments;
+    let totalComments = feedback?._count?.comments;
     for (const childrenCount of feedback.comments) {
       totalComments += childrenCount._count.children;
     }

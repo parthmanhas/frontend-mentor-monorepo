@@ -20,14 +20,14 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
 
     const groupComments = (comments, parentId = null) => {
         const result = [];
-    
+
         for (const comment of comments) {
             if (comment.parentCommentId === parentId) {
                 const children = groupComments(comments, comment.id);
                 result.push({ ...comment, children });
             }
         }
-    
+
         return result;
     }
 
@@ -59,7 +59,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
                 </Link>
             </div>
             <SuggestionCard feedback={{ ...feedback, tags: [] }} />
-            <Comments parentFeedbackId={feedback.id} comments={feedback.comments} />
+            <Comments totalComments={feedback.totalComments} parentFeedbackId={feedback.id} comments={feedback.comments} />
             {/* TODO: change the userEmail to global variable, do this when implementing authentication */}
             <AddComment userEmail="getUserNameFromContext@goog.com" feedbackId={feedback.id} className="mt-auto" />
         </PageContent>

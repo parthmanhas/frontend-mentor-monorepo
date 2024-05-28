@@ -12,12 +12,12 @@ export const SORT_OPTIONS: { name: string, field: string, order: 'asc' | 'desc' 
     {
         name: "Most Comments",
         field: "comments",
-        order: "asc"
+        order: "desc"
     },
     {
         name: "Least Comments",
         field: "comments",
-        order: "desc"
+        order: "asc"
     },
 ]
 
