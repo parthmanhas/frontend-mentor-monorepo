@@ -1,11 +1,13 @@
 "use server";
 
 import db from '@/lib/db';
-import { Status } from '@prisma/client';
+import { Status, User } from '@prisma/client';
 import { z } from 'zod';
-import { USER_EMAIL } from '@/lib/constants';
 import { FeedbackWithComments, FeedbackWithTagsAndCommentsCountResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
+import { loginInSchema } from '@/lib/schema';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 export async function getFeedbackWithComments(id: string) {
     const feedback = await db.feedback.findUnique({
@@ -334,5 +336,54 @@ export async function getComments(feedbackId: string) {
         return results;
     } catch (e) {
         console.error(`Error getting comments with feedback id : ${feedbackId}`, e);
+    }
+}
+
+export async function getUser(credentials: { email: string, password: string }): Promise<User | null> {
+    try {
+        const parsed = loginInSchema.safeParse(credentials);
+
+        if (!parsed.success) {
+            console.error(parsed.error)
+            return null;
+        }
+
+        const { email } = parsed.data;
+
+        const user = await db.user.findUnique({
+            where: {
+                email
+            }
+        });
+
+        if (!user) {
+            console.error('User not found');
+            return null;
+        }
+
+        return user;
+
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+) {
+    try {
+        await signIn('credentials', formData);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return 'Invalid credentials.';
+                default:
+                    return 'Something went wrong.';
+            }
+        }
+        throw error;
     }
 }

@@ -29,7 +29,7 @@ model Comment {
   children         Comment[] @relation("ParentChild")
   parentComment    Comment?  @relation("ParentChild", fields: [parentCommentId], references: [id])
   parentCommentId  String?
-  feedback         Feedback @relation(fields: [parentFeedbackId], references: [id])
+  feedback         Feedback  @relation(fields: [parentFeedbackId], references: [id])
   parentFeedbackId String
 }
 
@@ -58,6 +58,7 @@ model User {
   email     String     @id @unique
   username  String
   name      String     @unique
+  password  String
   feedbacks Feedback[]
   comments  Comment[]
 }

@@ -1,5 +1,6 @@
 import { PrismaClient, Status, Feedback, Category } from '@prisma/client'
 import { faker } from '@faker-js/faker';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient()
 
@@ -48,14 +49,18 @@ function generateCategories(count: number) {
 }
 
 
-function generateUsers(count: number, tags: { id: string; name: string; }[], categories: { name: string }[]) {
+async function generateUsers(count: number, tags: { id: string; name: string; }[], categories: { name: string }[]) {
     let users: any[] = [];
     for (let i = 0; i < count; i++) {
         const email = faker.internet.email();
+        const username = faker.internet.userName();
+        const name = faker.person.fullName();
+        const password = await bcrypt.hash(`123456`, 10)
         let user = {
             email,
-            username: faker.internet.userName(),
-            name: faker.person.fullName()
+            username,
+            name,
+            password
         }
         users.push(user);
     }
@@ -104,7 +109,6 @@ async function main() {
     await prisma.tag.deleteMany();
     await prisma.feedback.deleteMany();
     await prisma.category.deleteMany();
-
     const tags = generateTags(20);
     const categories = generateCategories(5);
 
@@ -177,12 +181,13 @@ async function main() {
 
     // await prisma.user.create(data1);
 
-    for (const user of users) {
+    for (const user of await users) {
         const data = {
             data: {
                 email: user.email,
                 username: user.username,
                 name: user.name,
+                password: user.password,
                 feedbacks: {
                     create: user.feedbacks.map((feedback: any) => ({
                         id: feedback.id,
@@ -217,7 +222,7 @@ async function main() {
         await prisma.user.create(data);
     }
 
-    for (let user of users) {
+    for (let user of await users) {
         for (let feedback of user.feedbacks) {
             for (let comment of feedback.comments) {
                 await prisma.comment.create({

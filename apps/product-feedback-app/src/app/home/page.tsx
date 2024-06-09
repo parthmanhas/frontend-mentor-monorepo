@@ -8,6 +8,8 @@ import Link from "next/link";
 import PageContent from "@/components/page-content";
 import { getAllTags, getFeedbacks } from "@/lib/server";
 import { FeedbackWithTagsAndCommentsCount } from "@/lib/types";
+import { SignOut } from "@/components/signout";
+import auth from "@/auth";
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
 
@@ -19,13 +21,14 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
   const { sort, order } = searchParams;
   let sortOption = { sort, order } as { sort: string, order: "asc" | "desc" };
 
-  const userEmail = searchParams["user"] as string;
-  if (!userEmail) {
-    console.error('userEmail cannot be found');
+  const session = await auth();
+  if (!session || !session.user || !session.user.email) {
+    console.error('Session or user or email not present');
+    // send to login page
     return;
   }
 
-  let feedbacksReponse = await getFeedbacks(userEmail, tags, sortOption);
+  let feedbacksReponse = await getFeedbacks(session.user.email, tags, sortOption);
   const feedbacks = feedbacksReponse?.map(feedback => {
     let totalComments = feedback?._count?.comments;
     for (const childrenCount of feedback.comments) {
@@ -49,12 +52,13 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         <Link href="/create">
           <Button>Add Feedback</Button>
         </Link>
+        <SignOut />
       </nav>
       <Content className="flex flex-1">
         {feedbacks.length > 0 &&
           <div className="w-full flex flex-col mt-5 gap-4 pb-5">
             {feedbacks?.map((feedback, index) => (
-              <Link key={index} href={`/${feedback.id}`}>
+              <Link key={index} href={`/id/${feedback.id}`}>
                 <SuggestionCard displayTags={true} feedback={feedback} />
               </Link>
             ))}
