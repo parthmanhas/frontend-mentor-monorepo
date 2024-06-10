@@ -1,7 +1,6 @@
 'use client' // Error components must be Client Components
 
 import { Button } from '@/components/ui/button'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -18,9 +17,9 @@ export default function Error({
     }, [error])
 
     const router = useRouter();
-    const { data, status } = useSession();
-    console.log(data)
-    console.log(status)
+    // const { data, status } = useSession();
+    // console.log(data)
+    // console.log(status)
 
     return (
         <div className='h-screen w-screen flex flex-col justify-center items-center'>

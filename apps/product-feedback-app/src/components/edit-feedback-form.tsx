@@ -11,6 +11,7 @@ import { useToast } from './ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import SubmitButton from '@/components/submit-button';
+import Link from 'next/link';
 
 
 export default function EditFeedbackForm({ feedback, categories }: { feedback: Feedback, categories: { name: string }[] }) {
@@ -62,7 +63,8 @@ export default function EditFeedbackForm({ feedback, categories }: { feedback: F
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button variant="outline">Cancel</Button>
+                    <Link href={`/id/${feedback.id}`}>
+                        <Button variant="outline">Cancel</Button></Link>
                     <SubmitButton>Update Feedback</SubmitButton>
                 </CardFooter>
             </Card>

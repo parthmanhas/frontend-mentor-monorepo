@@ -13,8 +13,9 @@ import { Tag } from "@prisma/client";
 import { Badge } from "./ui/badge";
 import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Roadmap from "./roadmap";
 
-export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
+export function FeedbackNavigationMenu({ tags, roadmapData }: { tags: Tag[], roadmapData: any }) {
     const [selectedTag, setSelectedTag] = useState<string[]>([]);
 
     const router = useRouter();
@@ -49,24 +50,7 @@ export function FeedbackNavigationMenu({ tags }: { tags: Tag[] }) {
                 <NavigationMenuItem>
                     <NavigationMenuTrigger>Roadmap</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                        <div className="w-[200px] p-4">
-                            <div className="flex justify-between mb-5 font-semibold">
-                                <p>Roadmap</p>
-                                <p>View</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <p>Planned</p>
-                                <p>2</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <p>In-Progress</p>
-                                <p>2</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <p>Live</p>
-                                <p>1</p>
-                            </div>
-                        </div>
+                        <Roadmap roadmapData={roadmapData}/>
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>

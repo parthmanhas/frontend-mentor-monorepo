@@ -1,9 +1,11 @@
+import auth from "@/auth";
 import AddComment from "@/components/add-comment";
 import Comments from "@/components/comments";
 import PageContent from "@/components/page-content";
 import SuggestionCard from "@/components/suggestion-card";
 import { Button } from "@/components/ui/button";
 import { getComments, getFeedbackWithComments } from "@/lib/server";
+import { Comment } from "@prisma/client";
 import Link from "next/link";
 
 type FeedbackPageProps = {
@@ -13,13 +15,19 @@ type FeedbackPageProps = {
 }
 
 export default async function FeedbackPage({ params }: FeedbackPageProps) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.email) {
+        console.error('Session or user or email not present');
+        // send to login page
+        return;
+    }
     const id = params.id;
     if (!id) {
         throw new Error('Feedback id not present in url!');
     }
 
-    const groupComments = (comments, parentId = null) => {
-        const result = [];
+    const groupComments = (comments: Comment[], parentId = null) => {
+        const result: (Comment & { children: Comment[] })[] = [];
 
         for (const comment of comments) {
             if (comment.parentCommentId === parentId) {
@@ -31,7 +39,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         return result;
     }
 
-    const getTotalComments = (comments) => {
+    const getTotalComments = (comments: Comment[]) => {
         if (!comments || comments.length == 0) return 0;
         let totalComments = comments.length;
         for (const comment of comments) {
@@ -40,9 +48,13 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         return totalComments;
     }
     const feedbackResponse = await getFeedbackWithComments(id);
-    let comments = await getComments(id);
+    let comments = await getComments(id) || [];
+    const totalComments = comments.length;
+    if (!comments) {
+        console.error('Error loading comments');
+    }
     comments = groupComments(comments);
-    const feedback = { ...feedbackResponse, totalComments: getTotalComments(feedbackResponse.comments), comments };
+    const feedback = { ...feedbackResponse, totalComments, comments };
 
     if (!feedback) {
         console.error('No feedback with present');
@@ -60,8 +72,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
             </div>
             <SuggestionCard feedback={{ ...feedback, tags: [] }} />
             <Comments totalComments={feedback.totalComments} parentFeedbackId={feedback.id} comments={feedback.comments} />
-            {/* TODO: change the userEmail to global variable, do this when implementing authentication */}
-            <AddComment userEmail="getUserNameFromContext@goog.com" feedbackId={feedback.id} className="mt-auto" />
+            <AddComment feedbackId={feedback.id} className="mt-auto" />
         </PageContent>
     )
 }

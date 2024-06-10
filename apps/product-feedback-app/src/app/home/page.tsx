@@ -6,10 +6,13 @@ import { FeedbackNavigationMenu } from '@/components/navigation-menu';
 import EmptyFeedback from "@/components/empty-feedback";
 import Link from "next/link";
 import PageContent from "@/components/page-content";
-import { getAllTags, getFeedbacks } from "@/lib/server";
+import { getAllTags, getAllTotalFeedbacksCount, getFeedbacks, getMyTotalFeedbacksCount, getRoadmap } from '@/lib/server';
 import { FeedbackWithTagsAndCommentsCount } from "@/lib/types";
 import { SignOut } from "@/components/signout";
 import auth from "@/auth";
+import SelectFeedbackType from "@/components/select-feedback-type";
+import { FeedbackPagination } from "@/components/feedback-pagination";
+import { FEEDBACK_PER_PAGE } from '@/lib/constants';
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
 
@@ -24,31 +27,39 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
   const session = await auth();
   if (!session || !session.user || !session.user.email) {
     console.error('Session or user or email not present');
-    // send to login page
     return;
   }
+  const feedbackType = searchParams["feedbacks"] === 'all' ? 'all' : 'my';
+  let allFeedbacksCount = null;
+  let myFeedbacksCount = null;
+  if (feedbackType === 'all') {
+    allFeedbacksCount = await getAllTotalFeedbacksCount();
+  } else {
+    myFeedbacksCount = await getMyTotalFeedbacksCount();
+  }
 
-  let feedbacksReponse = await getFeedbacks(session.user.email, tags, sortOption);
+  const currentPage = (+searchParams["page"] || 0) as number;
+
+  let feedbacksReponse;
+
+  feedbacksReponse = await getFeedbacks(currentPage, feedbackType, tags, sortOption);
   const feedbacks = feedbacksReponse?.map(feedback => {
     let totalComments = feedback?._count?.comments;
-    for (const childrenCount of feedback.comments) {
-      totalComments += childrenCount._count.children;
-    }
     return {
       ...feedback,
       totalComments
     } as FeedbackWithTagsAndCommentsCount;
-  })
+  }) || [];
   const allTags = await getAllTags();
+
+  const roadmapData = await getRoadmap();
 
   return (
     <PageContent className="min-h-screen justify-between">
       <nav className="flex items-center w-full justify-between p-8 bg-black/5 h-[100px]">
         <h1>Feedback Board</h1>
-        <FeedbackNavigationMenu tags={allTags} />
-        <div>
-          <p className="font-bold text-xl">{feedbacks.length} Suggestions</p>
-        </div>
+        <FeedbackNavigationMenu tags={allTags} roadmapData={roadmapData} />
+        <SelectFeedbackType />
         <Link href="/create">
           <Button>Add Feedback</Button>
         </Link>
@@ -66,6 +77,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         }
         {feedbacks.length === 0 && <EmptyFeedback />}
       </Content>
+      {(allFeedbacksCount || myFeedbacksCount) > FEEDBACK_PER_PAGE && <FeedbackPagination feedbacksCount={allFeedbacksCount || myFeedbacksCount} />}
     </PageContent>
   );
 }

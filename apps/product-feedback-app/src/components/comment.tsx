@@ -40,7 +40,13 @@ export default function Comment({ className, userEmail, username, content, child
                             </div>
                         </div>
                         <p className="text-black/70">{content}</p>
-                        {replying && <PostReply setReplying={setReplying} parentCommentId={id} userEmail={userEmail} parentFeedbackId={parentFeedbackId} />}
+                        {replying &&
+                            <PostReply
+                                setReplying={setReplying}
+                                parentCommentId={id}
+                                parentFeedbackId={parentFeedbackId}
+                            />
+                        }
                     </div>
                 </div>
                 <div className="ml-8 border-l-[1px]">

@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { postComment } from '@/lib/server';
 import { useToast } from './ui/use-toast';
 
-export default function PostReply({ parentCommentId, userEmail, setReplying, parentFeedbackId }: { parentCommentId: string, userEmail: string, setReplying: Function, parentFeedbackId: string }) {
+export default function PostReply({ parentCommentId, setReplying, parentFeedbackId }: { parentCommentId: string, setReplying: Function, parentFeedbackId: string }) {
 
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -24,8 +24,6 @@ export default function PostReply({ parentCommentId, userEmail, setReplying, par
         <form ref={formRef} action={clientAction} className="w-full flex justify-between my-5 gap-4">
             <input name="parentCommentId" value={parentCommentId} hidden readOnly />
             <input name="feedbackId" value={parentFeedbackId} hidden readOnly />
-            {/* TODO: fix userEmail when setting up authentication */}
-            <input name="userEmail" value="getUserNameFromContext@goog.com" hidden readOnly />
             <Textarea maxLength={250} name="content" />
             <Button>Post Reply</Button>
         </form>

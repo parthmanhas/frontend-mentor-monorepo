@@ -5,7 +5,7 @@ export const publicRoutes = [
 export const protectedRoutes = [
     '/create',
     '/edit',
-    '/home',
+    '/home?feedbacks=my',
     '/id/:id',
     '/edit/:id'
 ]

@@ -6,8 +6,9 @@ import { z } from 'zod';
 import { FeedbackWithComments, FeedbackWithTagsAndCommentsCountResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { loginInSchema } from '@/lib/schema';
-import { signIn } from '@/auth';
+import auth, { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { FEEDBACK_PER_PAGE } from './constants';
 
 export async function getFeedbackWithComments(id: string) {
     const feedback = await db.feedback.findUnique({
@@ -82,16 +83,34 @@ export async function getAllTags() {
     return tags;
 }
 
-export async function getFeedbacks(userEmail: string, filterTags: string[] | null, sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
-    if (!userEmail) {
-        console.error('userEmail not found');
-        return;
+export async function getFeedbacks(
+    currentPage: number,
+    type: 'all' | 'my',
+    filterTags: string[] | null,
+    sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
+
+    const session = await auth();
+    if (!session) {
+        throw new Error('Session not found');
     }
+
+    if (!session.user) {
+        throw new Error('User object not found');
+    }
+
+    if (!session.user.email) {
+        throw new Error('User email not found');
+    }
+
+    const userEmail = session.user.email;
+
     if (!filterTags || filterTags.length === 0) {
         const result = await db.feedback.findMany({
-            where: {
-                userEmail
-            },
+            ...(type === 'my' && {
+                where: {
+                    userEmail
+                }
+            }),
             include: {
                 tags: true,
                 _count: {
@@ -120,14 +139,18 @@ export async function getFeedbacks(userEmail: string, filterTags: string[] | nul
                         _count: sortOption.order
                     }
                 }
-            })
+            }),
+            skip: (currentPage - 1 < 0 ? 0 : currentPage - 1) * FEEDBACK_PER_PAGE,
+            take: FEEDBACK_PER_PAGE
         })
-        revalidatePath('/');
+        revalidatePath('/home');
         return result as FeedbackWithTagsAndCommentsCountResponse[];
     }
 
+    // with filter tags
     const result = await db.feedback.findMany({
         where: {
+            ...(type === 'my' && { userEmail }),
             tags: {
                 some: {
                     name: {
@@ -164,7 +187,9 @@ export async function getFeedbacks(userEmail: string, filterTags: string[] | nul
                     _count: sortOption.order
                 }
             }
-        })
+        }),
+        skip: (currentPage - 1 < 0 ? 0 : currentPage - 1) * FEEDBACK_PER_PAGE,
+        take: FEEDBACK_PER_PAGE
     })
     return result as FeedbackWithTagsAndCommentsCountResponse[];
 }
@@ -234,6 +259,7 @@ export async function updateUpvote(feedbackId: string) {
                 }
             }
         })
+        revalidatePath('/home');
         return response.upvotes;
     } catch (e) {
         console.error('Could not update feedback count', e);
@@ -256,6 +282,27 @@ export async function postComment(form: FormData) {
         content: z.string(),
         userEmail: z.string().email()
     })
+
+    try {
+        const session = await auth();
+        const loggedInUserEmail = session?.user?.email;
+
+        if (loggedInUserEmail) {
+            form.append('userEmail', loggedInUserEmail);
+        } else {
+            console.error('No user is logged in.');
+            return {
+                success: false,
+                message: 'Error adding comment'
+            }
+        }
+    } catch (error) {
+        console.error('Error during authentication:', error);
+        return {
+            success: false,
+            message: 'Error adding comment'
+        }
+    }
 
     const parsed = postCommentSchema.safeParse(Object.fromEntries(form));
 
@@ -385,5 +432,76 @@ export async function authenticate(
             }
         }
         throw error;
+    }
+}
+
+export async function getRoadmap() {
+    try {
+        const session = await auth();
+        if (!session) {
+            throw new Error('Session not found');
+        }
+
+        if (!session.user) {
+            throw new Error('User object not found');
+        }
+
+        if (!session.user.email) {
+            throw new Error('User email not found');
+        }
+        const loggedInUserEmail = session.user.email;
+        const roadmap = await db.feedback.groupBy({
+            by: ['status'],
+            _count: {
+                status: true
+            },
+            where: {
+                userEmail: loggedInUserEmail,
+                status: {
+                    in: ['INPROGRESS', 'LIVE', 'PLANNED']
+                }
+            }
+        });
+        return roadmap;
+    } catch (e) {
+        console.error('Could not find user email');
+    }
+
+
+}
+export async function getAllTotalFeedbacksCount() {
+    try {
+        const count = await db.feedback.count();
+        return count;
+    } catch (e) {
+        console.error('Error getting all feedbacks count');
+        return 0;
+    }
+}
+
+export async function getMyTotalFeedbacksCount() {
+
+    try {
+        const session = await auth();
+        if (!session) {
+            throw new Error('Session not found');
+        }
+
+        if (!session.user) {
+            throw new Error('User object not found');
+        }
+
+        if (!session.user.email) {
+            throw new Error('User email not found');
+        }
+        const count = await db.feedback.count({
+            where: {
+                userEmail: session.user.email
+            }
+        });
+        return count;
+    } catch (e) {
+        console.error('Error getting my feedbacks count');
+        return 0;
     }
 }

@@ -1,5 +1,5 @@
 import auth from '@/auth';
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, protectedRoutes, publicRoutes } from '@/route';
+import { apiAuthPrefix, protectedRoutes, publicRoutes } from '@/route';
 
 export default auth((req) => {
     const { nextUrl } = req;
@@ -15,7 +15,7 @@ export default auth((req) => {
 
     if (isLoggedIn && isPublicRoute) {
         // send to protected route: /home
-        return Response.redirect(new URL('/home', nextUrl));
+        return Response.redirect(new URL('/home?feedbacks=my', nextUrl));
     }
 
     if (!isLoggedIn && isProtectedRoute) {

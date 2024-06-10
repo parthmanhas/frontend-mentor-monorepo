@@ -23,3 +23,5 @@ export const SORT_OPTIONS: { name: string, field: string, order: 'asc' | 'desc' 
 
 // TODO: remove this hardcode
 export const USER_EMAIL = 'Lou_Ortiz17@hotmail.com';
+
+export const FEEDBACK_PER_PAGE = 10;
