@@ -5,10 +5,11 @@ import { Status, User } from '@prisma/client';
 import { z } from 'zod';
 import { FeedbackWithComments, FeedbackWithTagsAndCommentsCountResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { loginInSchema } from '@/lib/schema';
+import { loginInSchema, registerSchema } from '@/lib/schema';
 import auth, { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { FEEDBACK_PER_PAGE } from './constants';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export async function getFeedbackWithComments(id: string) {
     const feedback = await db.feedback.findUnique({
@@ -85,9 +86,13 @@ export async function getAllTags() {
 
 export async function getFeedbacks(
     currentPage: number,
-    type: 'all' | 'my',
+    type: 'all' | 'my' | null,
     filterTags: string[] | null,
     sortOption: { sort: string, order: 'asc' | 'desc' } | null) {
+
+    if (type == null) {
+        return [];
+    }
 
     const session = await auth();
     if (!session) {
@@ -420,6 +425,7 @@ export async function authenticate(
     prevState: string | undefined,
     formData: FormData,
 ) {
+    formData.append('redirectTo', '/home?feedbacks=my')
     try {
         await signIn('credentials', formData);
     } catch (error) {
@@ -432,6 +438,50 @@ export async function authenticate(
             }
         }
         throw error;
+    }
+}
+
+export async function register(
+    prevState: any | undefined,
+    formData: FormData,
+) {
+    try {
+        const parsed = registerSchema.parse(Object.fromEntries(formData));
+
+        const { email, password, name, username } = parsed;
+        const count = await db.user.count({
+            where: {
+                OR: [
+                    { username },
+                    { email }
+                ]
+            }
+        });
+
+        if (count >= 1) {
+            return { success: false, message: 'Username or email already exists' };
+        }
+
+        const bcrypt = require('bcrypt');
+        await db.user.create({
+            data: {
+                email,
+                password: await bcrypt.hash(password, 10),
+                name,
+                username
+            }
+        });
+        return { success: true, message: 'Account created successfully' }
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return { success: false, message: 'Invalid credentials.' };
+                default:
+                    return { success: false, message: 'Something went wrong.' };
+            }
+        }
+        return { success: false, message: 'Something went wrong.' };
     }
 }
 

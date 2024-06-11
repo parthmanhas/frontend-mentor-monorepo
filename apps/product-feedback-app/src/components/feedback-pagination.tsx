@@ -45,8 +45,8 @@ export function FeedbackPagination({ feedbacksCount }: { feedbacksCount: number 
                     <PaginationPrevious onClick={handlePreviousClick} />
                 </PaginationItem>
                 {Array.from({ length: MAX }, (_, i) => i + 1).map((item, index) => (
-                    <PaginationItem>
-                        <PaginationLink key={index} isActive={searchParams?.get('page') == `${item}`} onClick={() => handlePaginationClick(item)}>{item}</PaginationLink>
+                    <PaginationItem key={index}>
+                        <PaginationLink isActive={searchParams?.get('page') == `${item}`} onClick={() => handlePaginationClick(item)}>{item}</PaginationLink>
                     </PaginationItem>
                 ))}
                 <PaginationItem>

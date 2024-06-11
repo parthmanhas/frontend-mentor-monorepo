@@ -9,22 +9,6 @@ const authConfig: NextAuthConfig = {
         signIn: '/login',
         signOut: '/login'
     },
-    // callbacks: {
-    //     async authorized({ auth }) {
-    //         const isLoggedIn = !!auth?.user;
-    //         return isLoggedIn;
-    //     },
-    //     async redirect({ url, baseUrl }) {
-    //         const callbackUrl = new URL(url).searchParams.get('callbackUrl');
-
-    //         const isLoginPath = new URL(url).pathname === '/login';
-    //         if (isLoginPath && !callbackUrl) {
-    //             return `${baseUrl}/home`;
-    //         }
-
-    //         return callbackUrl || baseUrl;
-    //     },
-    // },
     providers: [
         Credentials({
             async authorize(credentials) {

@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { authenticate } from "@/lib/server";
 import { ArrowRightIcon, CircleAlert } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 
 export default function LoginPage() {
@@ -35,7 +34,7 @@ export default function LoginPage() {
                     </div>
                     <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
-                        <Input id="password" type="password" name="password" required />
+                        <Input id="password" placeholder='******' type="password" name="password" required />
                     </div>
                     {errorMessage && (<div
                         className="flex h-8 items-end space-x-1"
@@ -46,8 +45,9 @@ export default function LoginPage() {
                         <p className="text-sm text-red-500">{errorMessage}</p>
                     </div>)}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex flex-col">
                     <LoginButton />
+                    <Link className="mt-5" href="/register">Don't have an account? Register here</Link>
                 </CardFooter>
             </Card>
         </form>

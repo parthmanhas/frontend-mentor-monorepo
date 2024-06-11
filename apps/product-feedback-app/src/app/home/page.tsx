@@ -29,7 +29,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     console.error('Session or user or email not present');
     return;
   }
-  const feedbackType = searchParams["feedbacks"] === 'all' ? 'all' : 'my';
+  const feedbackType = (searchParams["feedbacks"] as 'all' | 'my') || null;
   let allFeedbacksCount = null;
   let myFeedbacksCount = null;
   if (feedbackType === 'all') {
@@ -40,9 +40,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 
   const currentPage = (+searchParams["page"] || 0) as number;
 
-  let feedbacksReponse;
-
-  feedbacksReponse = await getFeedbacks(currentPage, feedbackType, tags, sortOption);
+  const feedbacksReponse = await getFeedbacks(currentPage, feedbackType, tags, sortOption);
   const feedbacks = feedbacksReponse?.map(feedback => {
     let totalComments = feedback?._count?.comments;
     return {
@@ -50,6 +48,8 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
       totalComments
     } as FeedbackWithTagsAndCommentsCount;
   }) || [];
+
+
   const allTags = await getAllTags();
 
   const roadmapData = await getRoadmap();
@@ -66,7 +66,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         <SignOut />
       </nav>
       <Content className="flex flex-1">
-        {feedbacks.length > 0 &&
+        {feedbacks?.length > 0 &&
           <div className="w-full flex flex-col mt-5 gap-4 pb-5">
             {feedbacks?.map((feedback, index) => (
               <Link key={index} href={`/id/${feedback.id}`}>
@@ -75,9 +75,9 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
             ))}
           </div>
         }
-        {feedbacks.length === 0 && <EmptyFeedback />}
+        {feedbacks?.length === 0 && <EmptyFeedback />}
       </Content>
-      {(allFeedbacksCount || myFeedbacksCount) > FEEDBACK_PER_PAGE && <FeedbackPagination feedbacksCount={allFeedbacksCount || myFeedbacksCount} />}
+      {((allFeedbacksCount && allFeedbacksCount > FEEDBACK_PER_PAGE) || (myFeedbacksCount && myFeedbacksCount > FEEDBACK_PER_PAGE)) && <FeedbackPagination feedbacksCount={allFeedbacksCount || myFeedbacksCount || 0} />}
     </PageContent>
   );
 }

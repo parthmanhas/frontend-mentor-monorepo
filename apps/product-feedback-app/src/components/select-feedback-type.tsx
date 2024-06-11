@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 export default function SelectFeedbackType() {
@@ -15,13 +14,18 @@ export default function SelectFeedbackType() {
         } else {
             params.append("feedbacks", type);
         }
+
+        if (params.has('page')) {
+            params.set('page', '1');
+        }
+
         router.push(`${pathname}?${params.toString()}`);
     }
     return (
         <div className="space-x-2">
-            <Select onValueChange={handleFeedbackSelect} defaultValue={searchParams.get('feedbacks') || 'my'}>
+            <Select onValueChange={handleFeedbackSelect} defaultValue={searchParams?.get('feedbacks') || undefined}>
                 <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Feeback Type" />
+                    <SelectValue placeholder="Select Feeback Type" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="my">My Feedbacks</SelectItem>

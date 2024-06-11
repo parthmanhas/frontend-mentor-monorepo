@@ -1,11 +1,12 @@
 export const publicRoutes = [
-    '/login'
+    '/login',
+    '/register'
 ]
 
 export const protectedRoutes = [
     '/create',
     '/edit',
-    '/home?feedbacks=my',
+    '/home',
     '/id/:id',
     '/edit/:id'
 ]

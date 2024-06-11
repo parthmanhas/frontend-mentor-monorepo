@@ -1,11 +1,8 @@
-export default function Roadmap({ roadmapData }) {
+import { Status } from "@prisma/client";
+export default function Roadmap({ roadmapData }: { roadmapData: { status: Status, _count: { status: number } }[] }) {
 
     return (
         <div className="w-[200px] p-4">
-            <div className="flex justify-between mb-5 font-semibold">
-                <p>Roadmap</p>
-                <p>View</p>
-            </div>
             <div className="flex justify-between">
                 <p>Planned</p>
                 <p>{roadmapData?.find(data => data.status === 'PLANNED')?._count.status || 0}</p>

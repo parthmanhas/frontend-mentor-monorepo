@@ -26,7 +26,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         throw new Error('Feedback id not present in url!');
     }
 
-    const groupComments = (comments: Comment[], parentId = null) => {
+    const groupComments = (comments: Comment[], parentId: string | null = null) => {
         const result: (Comment & { children: Comment[] })[] = [];
 
         for (const comment of comments) {
@@ -39,7 +39,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         return result;
     }
 
-    const getTotalComments = (comments: Comment[]) => {
+    type CommentWithChildren = Comment & { children: CommentWithChildren[] }
+    const getTotalComments = (comments: CommentWithChildren[]) => {
         if (!comments || comments.length == 0) return 0;
         let totalComments = comments.length;
         for (const comment of comments) {
