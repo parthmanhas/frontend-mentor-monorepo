@@ -47,7 +47,7 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col">
                     <LoginButton />
-                    <Link className="mt-5" href="/register">Don't have an account? Register here</Link>
+                    <Link className="mt-5" href="/register">Don&apos;t have an account? Register here</Link>
                 </CardFooter>
             </Card>
         </form>
