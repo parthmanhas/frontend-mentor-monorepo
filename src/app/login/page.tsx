@@ -20,11 +20,15 @@ export default function LoginPage() {
     const [errorMessage, dispatch] = useFormState(authenticate, undefined);
     return (
         <div className="flex">
-            <div className='w-[50vw] h-screen space-y-2 flex flex-col justify-center items-center bg-black/90'>
-                <h1 className='text-white font-bold text-5xl'>Feedback Board</h1>
-                <h3 className='text-white text-xl'>Give Feedback. Iterate. Improve.</h3>
+            <div className='hidden md:flex w-[50vw] h-screen space-y-2 flex-col justify-center items-center bg-black/90'>
+                <h1 className='text-white font-bold text-4xl lg:text-5xl'>Feedback Board</h1>
+                <h3 className='text-white text-md lg:text-xl'>Give Feedback. Iterate. Improve.</h3>
             </div>
-            <form action={dispatch} className="w-[50vw] h-screen flex items-center justify-center bg-black">
+            <form action={dispatch} className="w-screen md:w-[50vw] h-screen flex flex-col md:flex-row items-center justify-center bg-black">
+                <div className='md:hidden space-y-2 flex-col justify-center items-center bg-black/90'>
+                    <h1 className='text-white font-bold text-4xl lg:text-5xl'>Feedback Board</h1>
+                    <h3 className='text-white text-md lg:text-xl text-center'>Give Feedback. Iterate. Improve.</h3>
+                </div>
                 <Card className="w-full max-w-sm m-5">
                     <CardHeader>
                         <CardTitle className="text-2xl">Login</CardTitle>

@@ -15,8 +15,9 @@ import { FeedbackNavigationMenu } from '@/components/navigation-menu';
 import Link from 'next/link';
 import { SignOut } from '@/components/signout';
 import SelectFeedbackType from '@/components/select-feedback-type';
+import { Tag } from "@prisma/client";
 
-export function MobileSidebar({ className, allTags, roadmapData }) {
+export function MobileSidebar({ className, allTags, roadmapData }: { className?: string, allTags: Tag[], roadmapData: any}) {
     return (
         <div className={className}>
             <Sheet>
