@@ -14,7 +14,6 @@ import { Badge } from "./ui/badge";
 import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Roadmap from "./roadmap";
-import useWindowWidth from "@/hooks/use-window";
 
 export function FeedbackNavigationMenu({ tags, roadmapData }: { tags: Tag[], roadmapData: any }) {
     const [selectedTag, setSelectedTag] = useState<string[]>([]);

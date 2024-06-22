@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button"
+import { BiLoaderAlt } from "react-icons/bi";
 import {
     Card,
     CardContent,
@@ -69,7 +70,8 @@ function LoginButton() {
 
     return (
         <Button type="submit" aria-disabled={pending} className="w-full">
-            Log In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            {!pending && <>Log In <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" /></>}
+            {pending && <BiLoaderAlt className="animate-spin" />}
         </Button>
 
     );

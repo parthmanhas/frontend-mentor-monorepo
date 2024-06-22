@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import Link from 'next/link';
 
 export default function EmptyFeedback() {
     return (
@@ -30,7 +31,9 @@ export default function EmptyFeedback() {
 
             <h1 className="text-3xl text-black/70 font-bold">There is no feedback yet.</h1>
             <p className="max-w-[500px] text-center text-black/50 my-5">Got a suggestion? Found a bug that needs to be squashed? We love hearing about new ideas to improve our app.</p>
-            <Button>Add Feedback</Button>
+            <Link href="/create">
+                <Button>Add Feedback</Button>
+            </Link>
         </div>
     )
 }
