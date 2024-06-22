@@ -4,6 +4,8 @@ import { useState } from "react";
 import PostReply from "./post-reply";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 
 type CommentProps = {
     className?: string,
@@ -29,14 +31,20 @@ export default function Comment({ className, userEmail, username, content, child
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="w-full">
-                        <div className="flex justify-between mb-5">
+                        <div className="flex justify-between">
                             <div>
                                 <p className="font-bold">{userEmail}</p>
                                 <p className="text-black/50">{username}</p>
                             </div>
-                            <div className="flex flex-col h-full items-center justify-between">
-                                <small className="text-black/50">Last Updated At: {updatedAt.toLocaleString()}</small>
+                            <div className="flex h-full space-x-2 items-start">
+
                                 <Button className="ml-auto" onClick={() => setReplying(!replying)}>{replying ? 'Cancel Reply' : 'Reply'}</Button>
+                                <Popover>
+                                    <PopoverTrigger><IoIosInformationCircleOutline /></PopoverTrigger>
+                                    <PopoverContent>
+                                        <small>Last Updated At: {updatedAt.toLocaleString()}</small>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
                         <p className="text-black/70">{content}</p>

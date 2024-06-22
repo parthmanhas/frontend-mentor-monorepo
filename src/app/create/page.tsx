@@ -8,7 +8,7 @@ export default async function CreateFeedbackPage() {
 
     const categories = await getAllCategory();
     return (
-        <PageContent className="py-5 items-center justify-center max-w-[600px]">
+        <PageContent className="p-5 items-center justify-center md:max-w-[600px]">
             <div className="w-full flex mb-auto">
                 <Link href="/">
                     <Button className="">Go Back</Button>

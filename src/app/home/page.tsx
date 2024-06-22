@@ -69,7 +69,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         </div>
         <MobileSidebar className="md:hidden" allTags={allTags} roadmapData={roadmapData} />
       </nav>
-      <Content className="flex flex-1">
+      <Content className="flex flex-1 px-5 xl:p-0">
         {feedbacks?.length > 0 &&
           <div className="w-full flex flex-col mt-5 gap-4 pb-5">
             {feedbacks?.map((feedback, index) => (

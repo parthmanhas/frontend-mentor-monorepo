@@ -20,7 +20,7 @@ export default function LoginPage() {
     const [errorMessage, dispatch] = useFormState(authenticate, undefined);
     return (
         <form action={dispatch} className="w-screen h-screen flex items-center justify-center">
-            <Card className="w-full max-w-sm">
+            <Card className="w-full max-w-sm m-5">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
                     <CardDescription>

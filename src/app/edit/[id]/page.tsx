@@ -19,7 +19,7 @@ export default async function FeedbackEdit({ params }: EditFeedbackPageProps) {
     }
     const categories = await getAllCategory();
     return (
-        <PageContent className="py-5 items-center justify-center max-w-[600px]">
+        <PageContent className="p-5 items-center justify-center max-w-[600px]">
             <div className="w-full flex mb-auto">
                 <Link href={`/id/${id}`}>
                     <Button className="">Go Back</Button>

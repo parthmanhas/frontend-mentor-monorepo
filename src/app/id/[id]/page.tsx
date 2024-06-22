@@ -62,7 +62,7 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
         return;
     }
     return (
-        <PageContent className="py-5">
+        <PageContent className="p-5">
             <div className="w-full flex justify-between mb-5">
                 <Link href="/home">
                     <Button>Go back</Button>

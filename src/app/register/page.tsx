@@ -13,7 +13,7 @@ export default function Register() {
 
     return (
         <form action={dispatch} className="w-screen h-screen flex items-center justify-center">
-            <Card className="w-full max-w-sm">
+            <Card className="w-full max-w-sm m-5">
                 <CardHeader>
                     <CardTitle className="text-2xl">Register</CardTitle>
                     <CardDescription>
