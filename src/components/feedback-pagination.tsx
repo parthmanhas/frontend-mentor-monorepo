@@ -9,10 +9,11 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export function FeedbackPagination({ feedbacksCount }: { feedbacksCount: number }) {
-    const MAX = Math.ceil(feedbacksCount / 10);
+export function FeedbackPagination({ feedbacksCount }: { feedbacksCount: number | null }) {
+
+    const MAX = Math.ceil((feedbacksCount || 0) / 10);
 
     const searchParams = useSearchParams();
 

@@ -58,7 +58,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
   return (
     <PageContent className="min-h-screen justify-between">
       <nav className="flex items-center w-full justify-between p-8 bg-black/5 h-[100px]">
-        <h1>Feedback Board</h1>
+        <h1 className="font-semibold">Feedback Board</h1>
         <div className="hidden md:flex md:space-x-3 lg:space-x-5">
           <FeedbackNavigationMenu tags={allTags} roadmapData={roadmapData} />
           <SelectFeedbackType />
@@ -81,7 +81,9 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
         }
         {feedbacks?.length === 0 && <EmptyFeedback />}
       </Content>
-      {((allFeedbacksCount && allFeedbacksCount > FEEDBACK_PER_PAGE) || (myFeedbacksCount && myFeedbacksCount > FEEDBACK_PER_PAGE)) && <FeedbackPagination feedbacksCount={allFeedbacksCount || myFeedbacksCount || 0} />}
+      {/* only one of them can be available */}
+      {(allFeedbacksCount || 0) > FEEDBACK_PER_PAGE && <FeedbackPagination feedbacksCount={allFeedbacksCount} />}
+      {(myFeedbacksCount || 0) > FEEDBACK_PER_PAGE && <FeedbackPagination feedbacksCount={myFeedbacksCount} />}
     </PageContent>
   );
 }
