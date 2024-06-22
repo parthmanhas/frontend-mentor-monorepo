@@ -22,7 +22,7 @@ export default function SelectFeedbackType() {
         router.push(`${pathname}?${params.toString()}`);
     }
     return (
-        <div className="space-x-2">
+        <div>
             <Select onValueChange={handleFeedbackSelect} defaultValue={searchParams?.get('feedbacks') || undefined}>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select Feeback Type" />

@@ -13,6 +13,7 @@ import auth from "@/auth";
 import SelectFeedbackType from "@/components/select-feedback-type";
 import { FeedbackPagination } from "@/components/feedback-pagination";
 import { FEEDBACK_PER_PAGE } from '@/lib/constants';
+import { MobileSidebar } from "@/components/mobile-sidebar";
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] } }) {
 
@@ -58,12 +59,15 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
     <PageContent className="min-h-screen justify-between">
       <nav className="flex items-center w-full justify-between p-8 bg-black/5 h-[100px]">
         <h1>Feedback Board</h1>
-        <FeedbackNavigationMenu tags={allTags} roadmapData={roadmapData} />
-        <SelectFeedbackType />
-        <Link href="/create">
-          <Button>Add Feedback</Button>
-        </Link>
-        <SignOut />
+        <div className="hidden md:flex md:space-x-3 lg:space-x-5">
+          <FeedbackNavigationMenu tags={allTags} roadmapData={roadmapData} />
+          <SelectFeedbackType />
+          <Link href="/create">
+            <Button>Add Feedback</Button>
+          </Link>
+          <SignOut />
+        </div>
+        <MobileSidebar className="md:hidden" allTags={allTags} roadmapData={roadmapData} />
       </nav>
       <Content className="flex flex-1">
         {feedbacks?.length > 0 &&
